@@ -1,0 +1,38 @@
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Transformerizer.Tests.Unit
+{
+    [TestClass]
+    [ExcludeFromCodeCoverage]
+    public class EnumerableExtensionsTests
+    {
+        [TestMethod]
+        public void BeginTransform_Works_With_General_Enumerable()
+        {
+            var enumerable = new object[0];
+            var result = enumerable.BeginTransform(x => x);
+        }
+
+        [TestMethod]
+        public void BeginTransform_Works_With_IProducerConsumer()
+        {
+            var enumerableMock = new Mock<IProducerConsumerCollection<object>>();
+            var result = enumerableMock.Object.BeginTransform(x => x);
+        }
+
+        [TestMethod]
+        public void BeginTransform_Works_With_BLockingCollection()
+        {
+            var enumerable = new BlockingCollection<object>();
+            var result = enumerable.BeginTransform(x => x);
+        }
+    }
+}
