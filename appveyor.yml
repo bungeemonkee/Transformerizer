@@ -3,7 +3,7 @@ version: '{branch}-{build}'
 skip_tags: true
 
 configuration: Release
-platform: AnyCPU
+platform: Any CPU
 
 shallow_clone: true
 
