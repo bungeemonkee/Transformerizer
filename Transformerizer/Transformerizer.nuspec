@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/bungeemonkee/Transformerizer</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/bungeemonkee/Transformerizer/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>$description$</description>
+    <summary>
+      A simple, parallel transformation library based on a producer consumer design.
+      See the readme here: https://github.com/bungeemonkee/Transformerizer/blob/master/README.md
+    </summary>
+    <releaseNotes>
+    </releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>transform, producer, consumer, parallel</tags>
+  </metadata>
+</package>
