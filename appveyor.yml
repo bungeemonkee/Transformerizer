@@ -9,7 +9,7 @@ shallow_clone: true
 
 environment:
   COVERALLS_REPO_TOKEN:
-    secure: 2iZcMi8Scy7Kg9H9x+VWEQ4CxERSTNUJGFM30kKqo4IY5zDIBN0UXu/J9JfV/pFK
+    secure: viyVPNYRUEFNeOo8Zcf8xE4DlgMalvnEec5QWt7PWgTiBE1CmeZTvrwem3lu/cJW
  
 before_build:
 - cmd: nuget restore Transformerizer.sln
