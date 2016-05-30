@@ -8,6 +8,10 @@ A parallel transformation library with a producer-consumer design
 
 Transformerizer is a simple transformation library that allows you to run multi-step trasnformations in parallel. Each step can run in parallel with each other using a producer/consumer design and with itself by setting a differnet number of threads to process each step.
 
+## Installation
+
+The easiest way to install this is using nuget: [https://www.nuget.org/packages/Transformerizer](https://www.nuget.org/packages/Transformerizer)
+
 ## Usage
 
 Usage is simple: any enumerable can begin a transformation by calling the `BeginTransform(..)` extension method. Then call `ThenTransform(...)` as necessary followed by `EndTransform(...)`.
