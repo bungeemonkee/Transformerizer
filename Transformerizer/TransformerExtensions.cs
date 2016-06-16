@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 namespace Transformerizer
 {
     /// <summary>
-    /// Extensions for <see cref="ITransformer{TProduce,TConsume}"/> that continue and end transformation chains.
+    ///     Extensions for <see cref="ITransformer{TProduce,TConsume}" /> that continue and end transformation chains.
     /// </summary>
     public static class TransformerExtensions
     {
         /// <summary>
-        /// Ends a transformation by waiting (synchronously) for it to finish.
+        ///     Ends a transformation by waiting (synchronously) for it to finish.
         /// </summary>
         /// <typeparam name="TProduce">The type of the items produced.</typeparam>
         /// <typeparam name="TConsume">The type of the items consumed.</typeparam>
@@ -25,7 +25,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Ends a transformation by waiting (asynchronously) for it to finish.
+        ///     Ends a transformation by waiting (asynchronously) for it to finish.
         /// </summary>
         /// <typeparam name="TProduce">The type of the items produced.</typeparam>
         /// <typeparam name="TConsume">The type of the items consumed.</typeparam>
@@ -85,7 +85,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Add a new transformation to a chain.
+        ///     Add a new transformation to a chain.
         /// </summary>
         public static ITransformer<TProduce, TConsume> ThenTransform<TProduce, TConsume, TOriginal>(this ITransformer<TConsume, TOriginal> transformer, Transform<TProduce, TConsume> transform)
         {
@@ -93,7 +93,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Add a new transformation to a chain.
+        ///     Add a new transformation to a chain.
         /// </summary>
         public static ITransformer<TProduce, TConsume> ThenTransform<TProduce, TConsume, TOriginal>(this ITransformer<TConsume, TOriginal> transformer, Transform<TProduce, TConsume> transform, int threads)
         {
@@ -101,7 +101,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Add a new transformation to a chain.
+        ///     Add a new transformation to a chain.
         /// </summary>
         public static ITransformer<TProduce, TConsume> ThenTransformMany<TProduce, TConsume, TOriginal>(this ITransformer<TConsume, TOriginal> transformer, TransformMany<TProduce, TConsume> transform)
         {
@@ -109,7 +109,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Add a new transformation to a chain.
+        ///     Add a new transformation to a chain.
         /// </summary>
         public static ITransformer<TProduce, TConsume> ThenTransformMany<TProduce, TConsume, TOriginal>(this ITransformer<TConsume, TOriginal> transformer, TransformMany<TProduce, TConsume> transform, int threads)
         {

@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace Transformerizer.Tests.Unit
 {
@@ -44,7 +44,7 @@ namespace Transformerizer.Tests.Unit
         {
             var enumerableMock = new Mock<IEnumerable<object>>();
             var source = new EnumerableProducerConsumer<object>(enumerableMock.Object);
-            var array = (Array)new object[0];
+            var array = (Array) new object[0];
             source.CopyTo(array, 0);
         }
 
@@ -73,7 +73,7 @@ namespace Transformerizer.Tests.Unit
         {
             var enumerableMock = new Mock<IEnumerable<object>>();
             var source = new EnumerableProducerConsumer<object>(enumerableMock.Object);
-            var result = ((IEnumerable)source).GetEnumerator();
+            var result = ((IEnumerable) source).GetEnumerator();
         }
 
         [TestMethod]

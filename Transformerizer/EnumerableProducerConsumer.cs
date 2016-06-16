@@ -6,7 +6,8 @@ using System.Collections.Generic;
 namespace Transformerizer
 {
     /// <summary>
-    /// Wraps an <see cref="IEnumerable{T}"/> with a simple, forward-only, thread-safe <see cref="IProducerConsumerCollection{T}"/>.
+    ///     Wraps an <see cref="IEnumerable{T}" /> with a simple, forward-only, thread-safe
+    ///     <see cref="IProducerConsumerCollection{T}" />.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the collection.</typeparam>
     public class EnumerableProducerConsumer<T> : IProducerConsumerCollection<T>, IDisposable
@@ -14,52 +15,51 @@ namespace Transformerizer
         private readonly IEnumerator<T> _sourceEnumerator;
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public int Count
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public bool IsSynchronized
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public object SyncRoot
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         /// <summary>
-        /// Creates a new EnumerableProducerConsumer using the given <see cref="IEnumerable{T}"/> as a data source.
+        ///     Creates a new EnumerableProducerConsumer using the given <see cref="IEnumerable{T}" /> as a data source.
         /// </summary>
-        /// <param name="source">The <see cref="IEnumerable{T}"/> to use as a source for all items.</param>
+        /// <param name="source">The <see cref="IEnumerable{T}" /> to use as a source for all items.</param>
         public EnumerableProducerConsumer(IEnumerable<T> source)
         {
             _sourceEnumerator = source.GetEnumerator();
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     See <see cref="IDisposable.Dispose()" />.
+        /// </summary>
+        public void Dispose()
+        {
+            _sourceEnumerator.Dispose();
+        }
+
+        /// <summary>
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public void CopyTo(Array array, int index)
@@ -68,7 +68,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public void CopyTo(T[] array, int index)
@@ -77,7 +77,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public IEnumerator<T> GetEnumerator()
@@ -86,7 +86,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public T[] ToArray()
@@ -95,7 +95,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public bool TryAdd(T item)
@@ -104,7 +104,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// See <see cref="IProducerConsumerCollection{T}.TryTake(out T)"/>.
+        ///     See <see cref="IProducerConsumerCollection{T}.TryTake(out T)" />.
         /// </summary>
         public bool TryTake(out T item)
         {
@@ -124,20 +124,12 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// See <see cref="IDisposable.Dispose()"/>.
-        /// </summary>
-        public void Dispose()
-        {
-            _sourceEnumerator.Dispose();
         }
     }
 }

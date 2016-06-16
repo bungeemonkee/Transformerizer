@@ -1,12 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace Transformerizer.Tests.Unit
 {
@@ -39,42 +34,42 @@ namespace Transformerizer.Tests.Unit
         public void BeginTransformMany_Works_With_General_Enumerable()
         {
             var enumerable = new object[0];
-            var result = enumerable.BeginTransformMany(x => new[] { x });
+            var result = enumerable.BeginTransformMany(x => new[] {x});
         }
 
         [TestMethod]
         public void BeginTransformMany_Works_With_IProducerConsumer()
         {
             var enumerableMock = new Mock<IProducerConsumerCollection<object>>();
-            var result = enumerableMock.Object.BeginTransformMany(x => new[] { x });
+            var result = enumerableMock.Object.BeginTransformMany(x => new[] {x});
         }
 
         [TestMethod]
         public void BeginTransformMany_Works_With_BlockingCollection()
         {
             var enumerable = new BlockingCollection<object>();
-            var result = enumerable.BeginTransformMany(x => new[] { x });
+            var result = enumerable.BeginTransformMany(x => new[] {x});
         }
 
         [TestMethod]
         public void BeginTransformMany_With_Threads_Works_With_General_Enumerable()
         {
             var enumerable = new object[0];
-            var result = enumerable.BeginTransformMany(x => new[] { x }, 1);
+            var result = enumerable.BeginTransformMany(x => new[] {x}, 1);
         }
 
         [TestMethod]
         public void BeginTransformMany_With_Threads_Works_With_IProducerConsumer()
         {
             var enumerableMock = new Mock<IProducerConsumerCollection<object>>();
-            var result = enumerableMock.Object.BeginTransformMany(x => new[] { x }, 1);
+            var result = enumerableMock.Object.BeginTransformMany(x => new[] {x}, 1);
         }
 
         [TestMethod]
         public void BeginTransformMany_With_Threads_Works_With_BlockingCollection()
         {
             var enumerable = new BlockingCollection<object>();
-            var result = enumerable.BeginTransformMany(x => new[] { x }, 1);
+            var result = enumerable.BeginTransformMany(x => new[] {x}, 1);
         }
     }
 }

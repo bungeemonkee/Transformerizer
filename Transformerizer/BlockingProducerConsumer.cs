@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Transformerizer
 {
     /// <summary>
-    /// A simple <see cref="IProducerConsumerCollection{T}"/> that wraps a <see cref="BlockingCollection{T}"/>.
+    ///     A simple <see cref="IProducerConsumerCollection{T}" /> that wraps a <see cref="BlockingCollection{T}" />.
     /// </summary>
     /// <typeparam name="T">The type of items in the collection.</typeparam>
     public class BlockingProducerConsumer<T> : IProducerConsumerCollection<T>, IDisposable
@@ -14,43 +14,34 @@ namespace Transformerizer
         private readonly BlockingCollection<T> _collection;
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public int Count
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public bool IsSynchronized
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public object SyncRoot
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { throw new NotImplementedException(); }
         }
 
         /// <summary>
-        /// Create a new BLockingProducerConsumer with an empty <see cref="BlockingCollection{T}"/>.
+        ///     Create a new BLockingProducerConsumer with an empty <see cref="BlockingCollection{T}" />.
         /// </summary>
         public BlockingProducerConsumer()
         {
@@ -58,16 +49,24 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Create a new BLockingProducerConsumer with the given <see cref="BlockingCollection{T}"/>.
+        ///     Create a new BLockingProducerConsumer with the given <see cref="BlockingCollection{T}" />.
         /// </summary>
-        /// <param name="collection">The <see cref="BlockingCollection{T}"/> to use as a backing store.</param>
+        /// <param name="collection">The <see cref="BlockingCollection{T}" /> to use as a backing store.</param>
         public BlockingProducerConsumer(BlockingCollection<T> collection)
         {
             _collection = collection;
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     See <see cref="IDisposable.Dispose()" />.
+        /// </summary>
+        public void Dispose()
+        {
+            _collection.Dispose();
+        }
+
+        /// <summary>
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public void CopyTo(Array array, int index)
@@ -76,7 +75,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public void CopyTo(T[] array, int index)
@@ -85,7 +84,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         public IEnumerator<T> GetEnumerator()
@@ -94,7 +93,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// See <see cref="IProducerConsumerCollection{T}.ToArray()"/>.
+        ///     See <see cref="IProducerConsumerCollection{T}.ToArray()" />.
         /// </summary>
         public T[] ToArray()
         {
@@ -102,7 +101,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// See <see cref="IProducerConsumerCollection{T}.TryAdd(T)"/>.
+        ///     See <see cref="IProducerConsumerCollection{T}.TryAdd(T)" />.
         /// </summary>
         public bool TryAdd(T item)
         {
@@ -110,7 +109,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// See <see cref="IProducerConsumerCollection{T}.TryTake(out T)"/>.
+        ///     See <see cref="IProducerConsumerCollection{T}.TryTake(out T)" />.
         /// </summary>
         public bool TryTake(out T item)
         {
@@ -118,7 +117,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// Always throws <see cref="NotImplementedException"/>.
+        ///     Always throws <see cref="NotImplementedException" />.
         /// </summary>
         /// <exception cref="NotImplementedException">Always thrown.</exception>
         IEnumerator IEnumerable.GetEnumerator()
@@ -127,19 +126,11 @@ namespace Transformerizer
         }
 
         /// <summary>
-        /// See <see cref="BlockingCollection{T}.CompleteAdding()"/>.
+        ///     See <see cref="BlockingCollection{T}.CompleteAdding()" />.
         /// </summary>
         public void CompleteAdding()
         {
             _collection.CompleteAdding();
-        }
-
-        /// <summary>
-        /// See <see cref="IDisposable.Dispose()"/>.
-        /// </summary>
-        public void Dispose()
-        {
-            _collection.Dispose();
         }
     }
 }

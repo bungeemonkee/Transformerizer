@@ -20,7 +20,7 @@ namespace Transformerizer.Tests.Unit
                 .Setup(x => x.ExecuteAsync())
                 .Returns(task);
 
-            var result = TransformerExtensions.EndTransformAsync(transformMock.Object);
+            var result = transformMock.Object.EndTransformAsync();
 
             Assert.IsNotNull(result);
             transformMock.VerifyAll();
@@ -42,7 +42,7 @@ namespace Transformerizer.Tests.Unit
                 .Setup(x => x.Produce)
                 .Throws(exception);
 
-            var result = TransformerExtensions.EndTransformAsync(transformMock.Object);
+            var result = transformMock.Object.EndTransformAsync();
 
             taskCompletionSource.SetResult(null);
 
@@ -64,7 +64,7 @@ namespace Transformerizer.Tests.Unit
             transformMock
                 .Setup(x => x.Dispose());
 
-            var result = TransformerExtensions.EndTransformAsync(transformMock.Object);
+            var result = transformMock.Object.EndTransformAsync();
 
             taskCompletionSource.SetResult(null);
 
@@ -88,7 +88,7 @@ namespace Transformerizer.Tests.Unit
             Exception result = null;
             try
             {
-                TransformerExtensions.EndTransformAsync(transformMock.Object);
+                transformMock.Object.EndTransformAsync();
             }
             catch (Exception e)
             {

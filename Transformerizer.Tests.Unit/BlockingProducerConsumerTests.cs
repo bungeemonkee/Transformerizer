@@ -1,7 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Transformerizer.Tests.Unit
 {
@@ -47,7 +47,7 @@ namespace Transformerizer.Tests.Unit
         public void CopyTo_Array_Throws_NotImplemented_Exception()
         {
             var collection = new BlockingProducerConsumer<object>();
-            var array = (Array)new object[0];
+            var array = (Array) new object[0];
             collection.CopyTo(array, 0);
         }
 
@@ -64,7 +64,7 @@ namespace Transformerizer.Tests.Unit
         public void GetEnumerator_Untyped_Throws_NotImplemented_Exception()
         {
             var collection = new BlockingProducerConsumer<object>();
-            var result = ((IEnumerable)collection).GetEnumerator();
+            var result = ((IEnumerable) collection).GetEnumerator();
         }
     }
 }
