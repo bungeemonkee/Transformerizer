@@ -26,14 +26,14 @@ namespace Transformerizer
         private readonly ITransformer _dependentTransformer;
         private readonly BlockingProducerConsumer<TProduce> _produce;
 
-        private bool hasStarted;
-        private volatile bool hasError;
-        private volatile int _completedThreads;
+        private bool _hasStarted;
+        private volatile bool _hasError;
+        private int _completedThreads;
 
         /// <summary>
         /// See <see cref="ITransformer{TProduce,TConsume}.Consume"/>.
         /// </summary>
-        public IProducerConsumerCollection<TConsume> Consume { get; private set; }
+        public IProducerConsumerCollection<TConsume> Consume { get; }
 
         /// <summary>
         /// See <see cref="ITransformer{TProduce,TConsume}.Produce"/>.
@@ -43,8 +43,8 @@ namespace Transformerizer
         /// <summary>
         /// See <see cref="ITransformer.ThreadCount"/>.
         /// </summary>
-        public int ThreadCount { get; private set; }
-        
+        public int ThreadCount { get; }
+
         /// <summary>
         /// Process a single consumed item, adding any results to the <see cref="Produce"/> collection.
         /// </summary>
@@ -122,10 +122,7 @@ namespace Transformerizer
         {
             // If we can dispose of the production collection we must
             var disposable = Produce as IDisposable;
-            if (disposable != null)
-            {
-                disposable.Dispose();
-            }
+            disposable?.Dispose();
 
             if (_dependentTransformer != null)
             {
@@ -136,10 +133,7 @@ namespace Transformerizer
             {
                 // If there is no dependent transformation then dispose of the consumer source
                 disposable = Consume as IDisposable;
-                if (disposable != null)
-                {
-                    disposable.Dispose();
-                }
+                disposable?.Dispose();
             }
         }
 
@@ -149,13 +143,13 @@ namespace Transformerizer
         public Task ExecuteAsync()
         {
             // Make sure this transformation has not been started already
-            if (hasStarted)
+            if (_hasStarted)
             {
                 throw new InvalidOperationException("This transformation has already been started.");
             }
 
             // Record the start of this transformation
-            hasStarted = true;
+            _hasStarted = true;
 
             // If there is a dependent transformer then start it
             var dependentTask = _dependentTransformer?.ExecuteAsync();
@@ -167,7 +161,7 @@ namespace Transformerizer
             var args = new Tuple<TaskCompletionSource<object>, Task>(taskCompletionSource, dependentTask);
 
             // Start all the work items for this process
-            for (int i = 0; i < ThreadCount; ++i)
+            for (var i = 0; i < ThreadCount; ++i)
             {
                 ThreadPool.QueueUserWorkItem(Process, args);
             }
@@ -183,7 +177,7 @@ namespace Transformerizer
 
             // Process all the input
             TConsume consume;
-            while (!hasError && Consume.TryTake(out consume))
+            while (!_hasError && Consume.TryTake(out consume))
             {
                 try
                 {
@@ -192,7 +186,7 @@ namespace Transformerizer
                 catch (Exception e)
                 {
                     // Let other threads know of the error
-                    hasError = true;
+                    _hasError = true;
 
                     // Inform the task of the exception
                     args.Item1.TrySetException(e);
