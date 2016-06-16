@@ -29,7 +29,7 @@ namespace Transformerizer.Tests.Unit
         }
 
         [TestMethod]
-        public void BeginTransform_Works_With_BLockingCollection()
+        public void BeginTransform_Works_With_BlockingCollection()
         {
             var enumerable = new BlockingCollection<object>();
             var result = enumerable.BeginTransform(x => x);
