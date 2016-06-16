@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 
 namespace Transformerizer
 {
+    /// <summary>
+    /// The base of any <see cref="ITransformer{TProduce,TConsume}"/>.
+    /// </summary>
+    /// <typeparam name="TProduce">The type of items produced.</typeparam>
+    /// <typeparam name="TConsume">The type of items consumed.</typeparam>
     public abstract class TransformerBase<TProduce, TConsume> : ITransformer<TProduce, TConsume>
     {
         /// <summary>
-        /// The default number of threads used for any <see cref="ITransformation{TProduce, TConsume}"/> when it has no dependent transformation.
-        /// Any <see cref="ITransformation{TProduce, TConsume}"/> with a dependent transformation will default to the number of threads used by it's dependent transformation.
+        /// The default number of threads used for any <see cref="ITransformer{TProduce, TConsume}"/> when it has no dependent transformation.
+        /// Any <see cref="ITransformer{TProduce, TConsume}"/> with a dependent transformation will default to the number of threads used by it's dependent transformation.
         /// Using this value is almost always sub-optimal.
         /// Do you own testing about what thread count best optimizes each step in your transform.
         /// </summary>
@@ -25,29 +30,54 @@ namespace Transformerizer
         private volatile bool hasError;
         private volatile int _completedThreads;
 
+        /// <summary>
+        /// See <see cref="ITransformer{TProduce,TConsume}.Consume"/>.
+        /// </summary>
         public IProducerConsumerCollection<TConsume> Consume { get; private set; }
 
+        /// <summary>
+        /// See <see cref="ITransformer{TProduce,TConsume}.Produce"/>.
+        /// </summary>
         public IProducerConsumerCollection<TProduce> Produce => _produce;
 
+        /// <summary>
+        /// See <see cref="ITransformer.ThreadCount"/>.
+        /// </summary>
         public int ThreadCount { get; private set; }
-
+        
+        /// <summary>
+        /// Process a single consumed item, adding any results to the <see cref="Produce"/> collection.
+        /// </summary>
+        /// <param name="consume">The item to consume, already removed from the <see cref="Consume"/> collection.</param>
         protected abstract void ProcessConsume(TConsume consume);
 
+        /// <summary>
+        /// Create a TransformerBase.
+        /// </summary>
         protected TransformerBase(IProducerConsumerCollection<TConsume> consume)
             : this(consume, null, DefaultThreadCount)
         {
         }
 
+        /// <summary>
+        /// Create a TransformerBase.
+        /// </summary>
         protected TransformerBase(IProducerConsumerCollection<TConsume> consume, int threads)
             : this(consume, null, threads)
         {
         }
 
+        /// <summary>
+        /// Create a TransformerBase.
+        /// </summary>
         protected TransformerBase(IProducerConsumerCollection<TConsume> consume, ITransformer dependentTransformer)
             : this(consume, dependentTransformer, dependentTransformer.ThreadCount)
         {
         }
 
+        /// <summary>
+        /// Create a TransformerBase.
+        /// </summary>
         protected TransformerBase(IProducerConsumerCollection<TConsume> consume, ITransformer dependentTransformer, int threads)
         {
             if (consume == null)
@@ -67,17 +97,27 @@ namespace Transformerizer
             _produce = new BlockingProducerConsumer<TProduce>();
         }
 
+        /// <summary>
+        /// Finalizer. Forced disposal of this instance.
+        /// </summary>
         ~TransformerBase()
         {
             Dispose(false);
         }
 
+        /// <summary>
+        /// See <see cref="IDisposable.Dispose()"/>.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Disposes of this instance.
+        /// </summary>
+        /// <param name="finalizing">True if called from <see cref="Dispose()"/>, false otherwise.</param>
         protected virtual void Dispose(bool finalizing)
         {
             // If we can dispose of the production collection we must
@@ -103,6 +143,9 @@ namespace Transformerizer
             }
         }
 
+        /// <summary>
+        /// See <see cref="ITransformer.ExecuteAsync()"/>.
+        /// </summary>
         public Task ExecuteAsync()
         {
             // Make sure this transformation has not been started already

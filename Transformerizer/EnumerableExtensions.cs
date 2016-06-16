@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Transformerizer
 {
+    /// <summary>
+    /// Extensions for <see cref="IEnumerable{T}"/> to begin transformation chains.
+    /// </summary>
     public static class EnumerableExtensions
     {
         /// <summary>
@@ -10,7 +13,7 @@ namespace Transformerizer
         /// </summary>
         /// <remarks>
         /// Manually test several different thread counts for each step in order to optimize your transformation chain.
-        /// Generally IO bound steps should have more threads as they are going to be idle waiting on IO reather than consuming CPU.
+        /// Generally IO bound steps should have more threads as they are going to be idle waiting on IO rather than consuming CPU.
         /// Generally CPU bound steps should have fewer threads as they are going to 
         /// </remarks>
         /// <typeparam name="TProduce">The type of item produced by this transformation.</typeparam>
@@ -24,7 +27,7 @@ namespace Transformerizer
             // Turn the source into an IProcuderConsumerCollection
             var consume = CastOrWrap(source);
 
-            // Create a thread-safe producer consumer from this enumerable then use that as the transform source
+            // Create a thread-safe producer consumer from this enumerable
             return new Transformer<TProduce, TConsume>(consume, transform, threads);
         }
 
@@ -48,7 +51,7 @@ namespace Transformerizer
             // Turn the source into an IProcuderConsumerCollection
             var consume = CastOrWrap(source);
 
-            // Create a thread-safe producer consumer from this enumerable then use that as the transform source
+            // Create a thread-safe producer consumer from this enumerable
             return new Transformer<TProduce, TConsume>(consume, transform);
         }
 
