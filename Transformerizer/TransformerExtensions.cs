@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Transformerizer
 {
@@ -18,31 +19,49 @@ namespace Transformerizer
             // Create a task completion for when we've gotten the results from the transformer
             var taskCompletionSource = new TaskCompletionSource<TProduce[]>();
 
-            // Create the transform task for the actual transformation
-            var transformTask = transformer.ExecuteAsync();
-
-            // When the transform is done resolve the task completion
-            transformTask.ContinueWith(t =>
+            try
             {
-                switch (t.Status)
-                {
-                    case TaskStatus.Canceled:
-                        // Set the task result to canceled
-                        taskCompletionSource.SetCanceled();
-                        break;
-                    case TaskStatus.Faulted:
-                        // Set the task result to the exception in the transformation task
-                        taskCompletionSource.SetException(t.Exception);
-                        break;
-                    default:
-                        // Set the task result to transformer's production collection
-                        taskCompletionSource.SetResult(transformer.Produce.ToArray());
-                        break;
-                }
+                // Create the transform task for the actual transformation
+                var transformTask = transformer.ExecuteAsync();
 
-                // Dispose of the transformer now that we got everything from it
+                // When the transform is done resolve the task completion
+                transformTask.ContinueWith(t =>
+                {
+                    try
+                    {
+                        switch (t.Status)
+                        {
+                            case TaskStatus.Canceled:
+                                // Set the task result to canceled
+                                taskCompletionSource.SetCanceled();
+                                break;
+                            case TaskStatus.Faulted:
+                                // Set the task result to the exception in the transformation task
+                                taskCompletionSource.SetException(t.Exception);
+                                break;
+                            default:
+                                // Set the task result to transformer's production collection
+                                taskCompletionSource.SetResult(transformer.Produce.ToArray());
+                                break;
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        taskCompletionSource.TrySetException(exception);
+                    }
+                    finally
+                    {
+                        // Dispose of the transformer now that we got everything from it
+                        transformer.Dispose();
+                    }
+                });
+            }
+            catch
+            {
+                // If there was an exception starting the transformation dispose of the transformer and r-throw the exception
                 transformer.Dispose();
-            });
+                throw;
+            }
 
             // Return the task completion source
             return taskCompletionSource.Task;
