@@ -14,22 +14,14 @@ namespace Transformerizer
         private readonly BlockingCollection<T> _collection;
 
         /// <summary>
-        ///     Always throws <see cref="NotImplementedException" />.
+        ///     Always returns the count of objects in the backing <see cref="BlockingCollection{T}"/>.
         /// </summary>
-        /// <exception cref="NotImplementedException">Always thrown.</exception>
-        public int Count
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public int Count => _collection.Count;
 
         /// <summary>
-        ///     Always throws <see cref="NotImplementedException" />.
+        ///     Always returns true.
         /// </summary>
-        /// <exception cref="NotImplementedException">Always thrown.</exception>
-        public bool IsSynchronized
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public bool IsSynchronized => true;
 
         /// <summary>
         ///     Always throws <see cref="NotImplementedException" />.
@@ -84,12 +76,11 @@ namespace Transformerizer
         }
 
         /// <summary>
-        ///     Always throws <see cref="NotImplementedException" />.
+        ///     See <see cref="BlockingCollection{T}.GetConsumingEnumerable()"/>.
         /// </summary>
-        /// <exception cref="NotImplementedException">Always thrown.</exception>
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _collection.GetConsumingEnumerable().GetEnumerator();
         }
 
         /// <summary>
@@ -117,12 +108,11 @@ namespace Transformerizer
         }
 
         /// <summary>
-        ///     Always throws <see cref="NotImplementedException" />.
+        ///     See <see cref="BlockingCollection{T}.GetConsumingEnumerable()"/>.
         /// </summary>
-        /// <exception cref="NotImplementedException">Always thrown.</exception>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
 
         /// <summary>
