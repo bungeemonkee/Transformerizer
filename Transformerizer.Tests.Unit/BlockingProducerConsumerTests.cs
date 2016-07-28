@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,19 +11,19 @@ namespace Transformerizer.Tests.Unit
     public class BlockingProducerConsumerTests
     {
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void Count_Throws_NotImplemented_Exception()
+        public void Count_Returns_BlockingCollection_Count()
         {
             var collection = new BlockingProducerConsumer<object>();
             var result = collection.Count;
+            Assert.AreEqual(0, result);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void IsSyncronized_Throws_NotImplemented_Exception()
+        public void IsSyncronized_Returns_True()
         {
             var collection = new BlockingProducerConsumer<object>();
             var result = collection.IsSynchronized;
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
@@ -52,19 +53,19 @@ namespace Transformerizer.Tests.Unit
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void GetEnumerator_Typed_Throws_NotImplemented_Exception()
+        public void GetEnumerator_Typed_Returns_Enumerator()
         {
             var collection = new BlockingProducerConsumer<object>();
             var result = collection.GetEnumerator();
+            Assert.IsInstanceOfType(result, typeof(IEnumerator<object>));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void GetEnumerator_Untyped_Throws_NotImplemented_Exception()
+        public void GetEnumerator_Untyped_Returns_Enumerator()
         {
             var collection = new BlockingProducerConsumer<object>();
             var result = ((IEnumerable) collection).GetEnumerator();
+            Assert.IsInstanceOfType(result, typeof(IEnumerator<object>));
         }
     }
 }
