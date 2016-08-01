@@ -8,7 +8,7 @@ namespace Transformerizer.Tests.Unit
 {
     [TestClass]
     [ExcludeFromCodeCoverage]
-    public class TransformerExtensionsTests
+    public class ProduceTransformerExtensionsTests
     {
         [TestMethod]
         public void EndTransformAsync_Does_Not_Dispose_Transformer_When_ExecuteAsync_Does_Not_Throw_An_Exception()
