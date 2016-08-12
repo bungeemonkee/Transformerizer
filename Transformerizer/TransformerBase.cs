@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,11 +21,10 @@ namespace Transformerizer
         /// </summary>
         public static readonly int DefaultThreadCount =
             Environment.ProcessorCount > 2
-                ? Environment.ProcessorCount/2
+                ? Environment.ProcessorCount / 2
                 : 1;
 
         private readonly ITransformer _dependentTransformer;
-        private readonly BlockingProducerConsumer<TProduce> _produce;
         private int _completedThreads;
         private volatile bool _hasError;
 
@@ -35,12 +33,12 @@ namespace Transformerizer
         /// <summary>
         ///     See <see cref="ITransformer{TProduce,TConsume}.Consume" />.
         /// </summary>
-        public IProducerConsumerCollection<TConsume> Consume { get; }
+        public IBlockingQueueRead<TConsume> Consume { get; }
 
         /// <summary>
         ///     See <see cref="ITransformer{TProduce,TConsume}.Produce" />.
         /// </summary>
-        public IProducerConsumerCollection<TProduce> Produce => _produce;
+        public IBlockingQueue<TProduce> Produce { get; }
 
         /// <summary>
         ///     See <see cref="ITransformer.ThreadCount" />.
@@ -50,7 +48,7 @@ namespace Transformerizer
         /// <summary>
         ///     Create a TransformerBase.
         /// </summary>
-        protected TransformerBase(IProducerConsumerCollection<TConsume> consume)
+        protected TransformerBase(IBlockingQueueRead<TConsume> consume)
             : this(consume, null, DefaultThreadCount)
         {
         }
@@ -58,7 +56,7 @@ namespace Transformerizer
         /// <summary>
         ///     Create a TransformerBase.
         /// </summary>
-        protected TransformerBase(IProducerConsumerCollection<TConsume> consume, int threads)
+        protected TransformerBase(IBlockingQueueRead<TConsume> consume, int threads)
             : this(consume, null, threads)
         {
         }
@@ -66,7 +64,7 @@ namespace Transformerizer
         /// <summary>
         ///     Create a TransformerBase.
         /// </summary>
-        protected TransformerBase(IProducerConsumerCollection<TConsume> consume, ITransformer dependentTransformer)
+        protected TransformerBase(IBlockingQueueRead<TConsume> consume, ITransformer dependentTransformer)
             : this(consume, dependentTransformer, dependentTransformer.ThreadCount)
         {
         }
@@ -74,7 +72,7 @@ namespace Transformerizer
         /// <summary>
         ///     Create a TransformerBase.
         /// </summary>
-        protected TransformerBase(IProducerConsumerCollection<TConsume> consume, ITransformer dependentTransformer, int threads)
+        protected TransformerBase(IBlockingQueueRead<TConsume> consume, ITransformer dependentTransformer, int threads)
         {
             if (consume == null)
             {
@@ -90,7 +88,7 @@ namespace Transformerizer
             _dependentTransformer = dependentTransformer;
             ThreadCount = threads;
 
-            _produce = new BlockingProducerConsumer<TProduce>();
+            Produce = new BlockingQueue<TProduce>();
         }
 
         /// <summary>
@@ -174,24 +172,31 @@ namespace Transformerizer
 
         private void Process(object state)
         {
+            const int bufferSize = 4;
+
             // Cast the input to the right object
-            var args = (Tuple<TaskCompletionSource<object>, Task>) state;
+            var args = (Tuple<TaskCompletionSource<object>, Task>)state;
+
+            // Thread-local buffer of items to process
+            TConsume[] consume;
 
             // Process all the input
-            TConsume consume;
-            while (!_hasError && Consume.TryTake(out consume))
+            while (!_hasError && Consume.TryTake(bufferSize, out consume))
             {
-                try
+                foreach (var item in consume)
                 {
-                    ProcessConsume(consume);
-                }
-                catch (Exception e)
-                {
-                    // Let other threads know of the error
-                    _hasError = true;
+                    try
+                    {
+                        ProcessConsume(item);
+                    }
+                    catch (Exception e)
+                    {
+                        // Let other threads know of the error
+                        _hasError = true;
 
-                    // Inform the task of the exception
-                    args.Item1.TrySetException(e);
+                        // Inform the task of the exception
+                        args.Item1.TrySetException(e);
+                    }
                 }
             }
 
@@ -200,7 +205,7 @@ namespace Transformerizer
             if (completedThreads < ThreadCount) return;
 
             // Complete the production collection
-            _produce.CompleteAdding();
+            Produce.CompleteAdding();
 
             if (args.Item2 != null)
             {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-
+﻿
 namespace Transformerizer
 {
     /// <summary>
@@ -9,8 +8,8 @@ namespace Transformerizer
     public interface IConsumeTransformer<TConsume> : ITransformer
     {
         /// <summary>
-        ///     The <see cref="IProducerConsumerCollection{T}" /> from which the consumed items are taken.
+        ///     The <see cref="IBlockingQueueRead{T}" /> from which the consumed items are taken.
         /// </summary>
-        IProducerConsumerCollection<TConsume> Consume { get; }
+        IBlockingQueueRead<TConsume> Consume { get; }
     }
 }

@@ -11,6 +11,7 @@ namespace Transformerizer.Tests.Unit
     public class ProduceTransformerExtensionsTests
     {
         [TestMethod]
+        [Timeout(1000)]
         public void EndTransformAsync_Does_Not_Dispose_Transformer_When_ExecuteAsync_Does_Not_Throw_An_Exception()
         {
             var task = new Task(() => { });
@@ -28,6 +29,7 @@ namespace Transformerizer.Tests.Unit
         }
 
         [TestMethod]
+        [Timeout(1000)]
         [ExpectedException(typeof(AggregateException))]
         public void EndTransformAsync_ReThrows_Exceptions_From_Continuation()
         {
@@ -50,6 +52,7 @@ namespace Transformerizer.Tests.Unit
         }
 
         [TestMethod]
+        [Timeout(1000)]
         public void EndTransformAsync_Disposes_Transformer_When_ExecuteAsync_Result_Is_Awaited()
         {
             var taskCompletionSource = new TaskCompletionSource<object>();
@@ -60,7 +63,7 @@ namespace Transformerizer.Tests.Unit
                 .Returns(taskCompletionSource.Task);
             transformMock
                 .SetupGet(x => x.Produce)
-                .Returns(new BlockingProducerConsumer<int>());
+                .Returns(new BlockingQueue<int>());
             transformMock
                 .Setup(x => x.Dispose());
 
@@ -74,6 +77,7 @@ namespace Transformerizer.Tests.Unit
         }
 
         [TestMethod]
+        [Timeout(1000)]
         public void EndTransformAsync_Disposes_Transformer_When_ExecuteAsync_Throws_Exception()
         {
             var exception = new Exception();
@@ -96,6 +100,68 @@ namespace Transformerizer.Tests.Unit
             }
 
             Assert.IsNotNull(result);
+            transformMock.VerifyAll();
+        }
+
+        [TestMethod]
+        [Timeout(1000)]
+        public void EndTransformAsync_Cancels_Returned_Task_If_Inner_Task_Is_Canceled()
+        {
+            var taskSource = new TaskCompletionSource<object>();
+            taskSource.SetCanceled();
+
+            var transformMock = new Mock<ITransformer<int, int>>();
+            transformMock
+                .Setup(x => x.ExecuteAsync())
+                .Returns(taskSource.Task);
+            transformMock
+                .Setup(x => x.Dispose());
+
+            var result = transformMock.Object.EndTransformAsync();
+
+            try
+            {
+                result.Wait();
+            }
+            catch (AggregateException exceptions)
+            {
+                exceptions.Handle(x => x is TaskCanceledException);
+            }
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IsCanceled);
+            transformMock.VerifyAll();
+        }
+
+        [TestMethod]
+        [Timeout(1000)]
+        public void EndTransformAsync_Passes_Exception_From_Inner_Task()
+        {
+            var exception = new Exception();
+
+            var taskSource = new TaskCompletionSource<object>();
+            taskSource.SetException(exception);
+
+            var transformMock = new Mock<ITransformer<int, int>>();
+            transformMock
+                .Setup(x => x.ExecuteAsync())
+                .Returns(taskSource.Task);
+            transformMock
+                .Setup(x => x.Dispose());
+
+            var result = transformMock.Object.EndTransformAsync();
+
+            try
+            {
+                result.Wait();
+            }
+            catch (AggregateException)
+            {
+            }
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.IsFaulted);
+            Assert.AreSame(exception, result.Exception.InnerException.InnerException);
             transformMock.VerifyAll();
         }
     }

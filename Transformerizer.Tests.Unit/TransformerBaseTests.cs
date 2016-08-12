@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -14,7 +13,7 @@ namespace Transformerizer.Tests.Unit
         [ExpectedException(typeof(InvalidOperationException))]
         public void ExecuteAsync_Throws_InvalidOperationException_When_Called_Twice()
         {
-            var producerConsumerMock = new Mock<IProducerConsumerCollection<object>>();
+            var producerConsumerMock = new Mock<IBlockingQueue<object>>();
             var transformerMock = new Mock<TransformerBase<object, object>>(producerConsumerMock.Object);
 
             object result;
@@ -44,7 +43,7 @@ namespace Transformerizer.Tests.Unit
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Constructor_Throws_ArgumentOutOfRangeException_Thread_Count_Is_Below_One()
         {
-            var collectionMock = new Mock<IProducerConsumerCollection<object>>();
+            var collectionMock = new Mock<IBlockingQueueRead<object>>();
             var transformerMock = new Transformer<object, object>(collectionMock.Object, null, 0);
         }
     }

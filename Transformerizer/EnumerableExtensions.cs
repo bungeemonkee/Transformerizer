@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Transformerizer
 {
@@ -25,8 +24,8 @@ namespace Transformerizer
         /// <returns>An <see cref="ITransformer{TProduce, TConsume}" /> suitable for parallel processing of transformation steps.</returns>
         public static ITransformer<TProduce, TConsume> BeginTransform<TProduce, TConsume>(this IEnumerable<TConsume> source, Transform<TProduce, TConsume> transform, int threads)
         {
-            // Turn the source into an IProcuderConsumerCollection
-            var consume = CastOrWrap(source);
+            // Turn the source into an IBlockingQueueRead
+            var consume = source as IBlockingQueueRead<TConsume> ?? new BlockingQueueRead<TConsume>(source);
 
             // Create a thread-safe producer consumer from this enumerable
             return new Transformer<TProduce, TConsume>(consume, transform, threads);
@@ -49,8 +48,8 @@ namespace Transformerizer
         /// <returns>An <see cref="ITransformer{TProduce, TConsume}" /> suitable for parallel processing of transformation steps.</returns>
         public static ITransformer<TProduce, TConsume> BeginTransform<TProduce, TConsume>(this IEnumerable<TConsume> source, Transform<TProduce, TConsume> transform)
         {
-            // Turn the source into an IProcuderConsumerCollection
-            var consume = CastOrWrap(source);
+            // Turn the source into an IBlockingQueueRead
+            var consume = source as IBlockingQueueRead<TConsume> ?? new BlockingQueueRead<TConsume>(source);
 
             // Create a thread-safe producer consumer from this enumerable
             return new Transformer<TProduce, TConsume>(consume, transform);
@@ -73,8 +72,8 @@ namespace Transformerizer
         /// <returns>An <see cref="ITransformer{TProduce, TConsume}" /> suitable for parallel processing of transformation steps.</returns>
         public static ITransformer<TProduce, TConsume> BeginTransformMany<TProduce, TConsume>(this IEnumerable<TConsume> source, TransformMany<TProduce, TConsume> transform, int threads)
         {
-            // Turn the source into an IProcuderConsumerCollection
-            var consume = CastOrWrap(source);
+            // Turn the source into an IBlockingQueueRead
+            var consume = source as IBlockingQueueRead<TConsume> ?? new BlockingQueueRead<TConsume>(source);
 
             // Create a thread-safe producer consumer from this enumerable
             return new TransformerMany<TProduce, TConsume>(consume, transform, threads);
@@ -97,25 +96,11 @@ namespace Transformerizer
         /// <returns>An <see cref="ITransformer{TProduce, TConsume}" /> suitable for parallel processing of transformation steps.</returns>
         public static ITransformer<TProduce, TConsume> BeginTransformMany<TProduce, TConsume>(this IEnumerable<TConsume> source, TransformMany<TProduce, TConsume> transform)
         {
-            // Turn the source into an IProcuderConsumerCollection
-            var consume = CastOrWrap(source);
+            // Turn the source into an IBlockingQueueRead
+            var consume = source as IBlockingQueueRead<TConsume> ?? new BlockingQueueRead<TConsume>(source);
 
             // Create a thread-safe producer consumer from this enumerable
             return new TransformerMany<TProduce, TConsume>(consume, transform);
-        }
-
-        private static IProducerConsumerCollection<T> CastOrWrap<T>(IEnumerable<T> source)
-        {
-            // If the source already is a producer then use that
-            var consume = source as IProducerConsumerCollection<T>;
-            if (consume != null) return consume;
-
-            // If the source is already a blocking collection then use that with a wrapper
-            var collection = source as BlockingCollection<T>;
-            if (collection != null) return new BlockingProducerConsumer<T>(collection);
-
-            // Wrap the enumerable in a thread-safe producer consumer implementation
-            return new EnumerableProducerConsumer<T>(source);
         }
     }
 }

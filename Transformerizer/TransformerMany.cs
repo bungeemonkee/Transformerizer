@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-
+﻿
 namespace Transformerizer
 {
     /// <summary>
@@ -15,7 +14,7 @@ namespace Transformerizer
         /// <summary>
         ///     Creates a new TransformerMany instance.
         /// </summary>
-        public TransformerMany(IProducerConsumerCollection<TConsume> consume, TransformMany<TProduce, TConsume> transform)
+        public TransformerMany(IBlockingQueueRead<TConsume> consume, TransformMany<TProduce, TConsume> transform)
             : this(consume, transform, null, DefaultThreadCount)
         {
         }
@@ -23,7 +22,7 @@ namespace Transformerizer
         /// <summary>
         ///     Creates a new TransformerMany instance.
         /// </summary>
-        public TransformerMany(IProducerConsumerCollection<TConsume> consume, TransformMany<TProduce, TConsume> transform, int threads)
+        public TransformerMany(IBlockingQueueRead<TConsume> consume, TransformMany<TProduce, TConsume> transform, int threads)
             : this(consume, transform, null, threads)
         {
         }
@@ -31,7 +30,7 @@ namespace Transformerizer
         /// <summary>
         ///     Creates a new TransformerMany instance.
         /// </summary>
-        public TransformerMany(IProducerConsumerCollection<TConsume> consume, TransformMany<TProduce, TConsume> transform, ITransformer dependentTransformer)
+        public TransformerMany(IBlockingQueueRead<TConsume> consume, TransformMany<TProduce, TConsume> transform, ITransformer dependentTransformer)
             : this(consume, transform, dependentTransformer, dependentTransformer.ThreadCount)
         {
         }
@@ -39,7 +38,7 @@ namespace Transformerizer
         /// <summary>
         ///     Creates a new TransformerMany instance.
         /// </summary>
-        public TransformerMany(IProducerConsumerCollection<TConsume> consume, TransformMany<TProduce, TConsume> transform, ITransformer dependentTransformer, int threads)
+        public TransformerMany(IBlockingQueueRead<TConsume> consume, TransformMany<TProduce, TConsume> transform, ITransformer dependentTransformer, int threads)
             : base(consume, dependentTransformer, threads)
         {
             _transform = transform;
@@ -51,10 +50,7 @@ namespace Transformerizer
         protected override void ProcessConsume(TConsume consume)
         {
             var results = _transform(consume);
-            foreach (var result in results)
-            {
-                Produce.TryAdd(result);
-            }
+            Produce.TryAdd(results);
         }
     }
 }

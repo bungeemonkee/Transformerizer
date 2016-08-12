@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-
+﻿
 namespace Transformerizer
 {
     /// <summary>
@@ -9,8 +8,8 @@ namespace Transformerizer
     public interface IProduceTransformer<TProduce> : ITransformer
     {
         /// <summary>
-        ///     The <see cref="IProducerConsumerCollection{T}" /> into which the produced items are placed.
+        ///     The <see cref="IBlockingQueue{T}" /> into which the produced items are placed.
         /// </summary>
-        IProducerConsumerCollection<TProduce> Produce { get; }
+        IBlockingQueue<TProduce> Produce { get; }
     }
 }

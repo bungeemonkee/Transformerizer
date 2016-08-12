@@ -58,9 +58,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="BlockingProducerConsumerTests.cs" />
+    <Compile Include="BlockingQueueReadTests.cs" />
+    <Compile Include="BlockingQueueTests.cs" />
     <Compile Include="EnumerableExtensionsTests.cs" />
-    <Compile Include="EnumerableProducerConsumerTest.cs" />
     <Compile Include="FullTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransformerBaseTests.cs" />

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Transformerizer
@@ -14,12 +16,12 @@ namespace Transformerizer
         /// <typeparam name="TProduce">The type of the items produced.</typeparam>
         /// <param name="transformer">The transformer to finish.</param>
         /// <returns>The results of the transformation.</returns>
-        public static TProduce[] EndTransform<TProduce>(this IProduceTransformer<TProduce> transformer)
+        public static IList<TProduce> EndTransform<TProduce>(this IProduceTransformer<TProduce> transformer)
         {
             using (transformer)
             {
                 transformer.ExecuteAsync().Wait();
-                return transformer.Produce.ToArray();
+                return transformer.Produce.ToList();
             }
         }
 
@@ -29,10 +31,10 @@ namespace Transformerizer
         /// <typeparam name="TProduce">The type of the items produced.</typeparam>
         /// <param name="transformer">The transformer to finish.</param>
         /// <returns>The results of the transformation.</returns>
-        public static Task<TProduce[]> EndTransformAsync<TProduce>(this IProduceTransformer<TProduce> transformer)
+        public static Task<IList<TProduce>> EndTransformAsync<TProduce>(this IProduceTransformer<TProduce> transformer)
         {
             // Create a task completion for when we've gotten the results from the transformer
-            var taskCompletionSource = new TaskCompletionSource<TProduce[]>();
+            var taskCompletionSource = new TaskCompletionSource<IList<TProduce>>();
 
             try
             {
@@ -55,8 +57,8 @@ namespace Transformerizer
                                 taskCompletionSource.SetException(t.Exception);
                                 break;
                             default:
-                                // Set the task result to transformer's production collection
-                                taskCompletionSource.SetResult(transformer.Produce.ToArray());
+                                // Set the task result to the transformer's production collection
+                                taskCompletionSource.SetResult(transformer.Produce.ToList());
                                 break;
                         }
                     }
