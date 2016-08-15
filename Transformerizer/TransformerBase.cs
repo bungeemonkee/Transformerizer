@@ -181,7 +181,7 @@ namespace Transformerizer
             TConsume[] consume;
 
             // Process all the input
-            while (!_hasError && Consume.TryTake(bufferSize, out consume))
+            while (!_hasError && GetBuffer(bufferSize, out consume))
             {
                 foreach (var item in consume)
                 {
@@ -224,6 +224,30 @@ namespace Transformerizer
 
             // Notify the handle that this is done
             args.Item1.TrySetResult(null);
+        }
+
+        private bool GetBuffer(int size, out TConsume[] consume)
+        {
+            if (Consume.HasCount)
+            {
+                // If there aren't enough items to fill the local thread buffer then scale the buffer down
+                var count = Consume.Count;
+                if (size > 1 && count < size * ThreadCount)
+                {
+                    size = count / ThreadCount;
+                    if (size < 1)
+                    {
+                        size = 1;
+                    }
+                }
+            }
+            else
+            {
+                size = 1;
+            }
+
+            // Get the buffer
+            return Consume.TryTake(size, out consume);
         }
     }
 }
