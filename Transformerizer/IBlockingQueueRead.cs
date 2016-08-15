@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Transformerizer
 {
@@ -8,16 +7,6 @@ namespace Transformerizer
     /// </summary>
     public interface IBlockingQueueRead<T> : IEnumerable<T>
     {
-        /// <summary>
-        /// Whether or not this queue can count its items.
-        /// </summary>
-        bool HasCount { get; }
-
-        /// <summary>
-        /// The count of objects in the queue.
-        /// </summary>
-        int Count { get; }
-
         /// <summary>
         /// Removes one or more items from the queue and returns them in an array.
         /// Blocks until items are removed or there are no more items to remove.

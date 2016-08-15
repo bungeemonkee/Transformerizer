@@ -5,7 +5,7 @@ namespace Transformerizer
     /// <summary>
     /// Defines a blocking queue's functionality.
     /// </summary>
-    public interface IBlockingQueue<T> : IBlockingQueueRead<T>
+    public interface IBlockingQueue<T> : IBlockingQueueReadCount<T>
     {
         /// <summary>
         /// Marks the queue so that any future insertions will fail.

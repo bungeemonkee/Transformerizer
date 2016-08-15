@@ -39,6 +39,7 @@
     <Compile Include="BlockingQueue.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="IBlockingQueue.cs" />
+    <Compile Include="IBlockingQueueReadCount.cs" />
     <Compile Include="ITransformer.cs" />
     <Compile Include="IProduceTransformer.cs" />
     <Compile Include="IConsumeTransformer.cs" />

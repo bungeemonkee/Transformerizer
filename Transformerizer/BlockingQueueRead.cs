@@ -12,19 +12,6 @@ namespace Transformerizer
         private readonly IEnumerable<T> _source;
         private readonly IEnumerator<T> _enumerator;
         
-        public bool HasCount => false;
-
-        /// <summary>
-        /// Unimplemented. Always throws <see cref="NotImplementedException"/>.
-        /// </summary>
-        public int Count
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         /// <summary>
         /// Create a new <see cref="BlockingQueueRead{T}"/> that reads from the given source.
         /// </summary>

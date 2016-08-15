@@ -25,9 +25,9 @@ namespace Transformerizer
                 : 1;
 
         private readonly ITransformer _dependentTransformer;
-        private int _completedThreads;
+        private readonly IBlockingQueueReadCount<TConsume> _consumeWithCount;
         private volatile bool _hasError;
-
+        private int _completedThreads;
         private bool _hasStarted;
 
         /// <summary>
@@ -88,6 +88,7 @@ namespace Transformerizer
             _dependentTransformer = dependentTransformer;
             ThreadCount = threads;
 
+            _consumeWithCount = consume as IBlockingQueueReadCount<TConsume>;
             Produce = new BlockingQueue<TProduce>();
         }
 
@@ -228,10 +229,14 @@ namespace Transformerizer
 
         private bool GetBuffer(int size, out TConsume[] consume)
         {
-            if (Consume.HasCount)
+            if (_consumeWithCount == null)
+            {
+                size = 1;
+            }
+            else
             {
                 // If there aren't enough items to fill the local thread buffer then scale the buffer down
-                var count = Consume.Count;
+                var count = _consumeWithCount.Count;
                 if (size > 1 && count < size * ThreadCount)
                 {
                     size = count / ThreadCount;
@@ -240,10 +245,6 @@ namespace Transformerizer
                         size = 1;
                     }
                 }
-            }
-            else
-            {
-                size = 1;
             }
 
             // Get the buffer
