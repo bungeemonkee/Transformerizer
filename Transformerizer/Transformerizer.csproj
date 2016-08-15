@@ -51,6 +51,7 @@
     <Compile Include="Transform.cs" />
     <Compile Include="Transformer.cs" />
     <Compile Include="TransformerBase.cs" />
+    <Compile Include="TransformerBase`2.cs" />
     <Compile Include="TransformerExtensions.cs" />
     <Compile Include="TransformerMany.cs" />
     <Compile Include="TransformMany.cs" />
