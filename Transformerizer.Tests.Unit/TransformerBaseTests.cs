@@ -13,8 +13,7 @@ namespace Transformerizer.Tests.Unit
         [ExpectedException(typeof(InvalidOperationException))]
         public void ExecuteAsync_Throws_InvalidOperationException_When_Called_Twice()
         {
-            var producerConsumerMock = new Mock<IBlockingQueue<object>>();
-            var transformerMock = new Mock<TransformerBase<object, object>>(producerConsumerMock.Object);
+            var transformerMock = new Mock<TransformerBase>(null, 1);
 
             object result;
             try
