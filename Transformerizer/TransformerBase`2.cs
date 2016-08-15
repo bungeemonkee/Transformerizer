@@ -28,30 +28,6 @@ namespace Transformerizer
         /// <summary>
         ///     Create a TransformerBase.
         /// </summary>
-        protected TransformerBase(IBlockingQueueRead<TConsume> consume)
-            : this(consume, null, DefaultThreadCount)
-        {
-        }
-
-        /// <summary>
-        ///     Create a TransformerBase.
-        /// </summary>
-        protected TransformerBase(IBlockingQueueRead<TConsume> consume, int threads)
-            : this(consume, null, threads)
-        {
-        }
-
-        /// <summary>
-        ///     Create a TransformerBase.
-        /// </summary>
-        protected TransformerBase(IBlockingQueueRead<TConsume> consume, ITransformer dependentTransformer)
-            : this(consume, dependentTransformer, dependentTransformer.ThreadCount)
-        {
-        }
-
-        /// <summary>
-        ///     Create a TransformerBase.
-        /// </summary>
         protected TransformerBase(IBlockingQueueRead<TConsume> consume, ITransformer dependentTransformer, int threads)
             : base(dependentTransformer, threads)
         {
