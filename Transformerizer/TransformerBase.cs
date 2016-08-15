@@ -52,14 +52,17 @@ namespace Transformerizer
         /// </summary>
         public Task ExecuteAsync()
         {
-            // Make sure this transformation has not been started already
-            if (_hasStarted)
+            lock (this)
             {
-                throw new InvalidOperationException("This transformation has already been started.");
-            }
+                // Make sure this transformation has not been started already
+                if (_hasStarted)
+                {
+                    throw new InvalidOperationException("This transformation has already been started.");
+                }
 
-            // Record the start of this transformation
-            _hasStarted = true;
+                // Record the start of this transformation
+                _hasStarted = true;
+            }
 
             // If there is a dependent transformer then start it
             var dependentTask = DependentTransformer?.ExecuteAsync();
