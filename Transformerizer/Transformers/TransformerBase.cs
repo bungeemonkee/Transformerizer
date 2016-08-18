@@ -109,9 +109,7 @@ namespace Transformerizer.Transformers
         /// <summary>
         ///     Complete processing on the last thread to finish.
         /// </summary>
-        protected virtual void ProcessComplete()
-        {
-        }
+        protected abstract void ProcessComplete();
 
         /// <summary>
         ///     See <see cref="ITransformer.ExecuteAsync()" />.

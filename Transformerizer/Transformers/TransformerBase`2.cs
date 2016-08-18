@@ -42,8 +42,6 @@ namespace Transformerizer.Transformers
         /// </summary>
         protected override void ProcessComplete()
         {
-            base.ProcessComplete();
-
             // Complete the production collection
             Produce.CompleteAdding();
         }

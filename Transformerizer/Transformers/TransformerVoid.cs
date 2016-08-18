@@ -46,6 +46,13 @@ namespace Transformerizer.Transformers
         }
 
         /// <summary>
+        /// See <see cref="TransformerBase.ProcessComplete()"/>.
+        /// </summary>
+        protected override void ProcessComplete()
+        {
+        }
+
+        /// <summary>
         ///     See <see cref="TransformerBase{TConsume}.ProcessConsume(TConsume)" />.
         /// </summary>
         protected override void ProcessConsume(TConsume consume)
