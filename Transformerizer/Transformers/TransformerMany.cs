@@ -1,8 +1,9 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Transformerizer.Collections;
+using Transformerizer.Methods;
 
-namespace Transformerizer
+namespace Transformerizer.Transformers
 {
     /// <summary>
     ///     An <see cref="ITransformer{TProduce,TConsume}" /> that processes <see cref="TransformMany{TProduce,TConsume}" />
@@ -48,7 +49,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        ///     See <see cref="TransformerBase{TProduce,TConsume}.ProcessConsume(TConsume)" />.
+        ///     See <see cref="TransformerBase{TConsume}.ProcessConsume(TConsume)" />.
         /// </summary>
         protected override void ProcessConsume(TConsume consume)
         {

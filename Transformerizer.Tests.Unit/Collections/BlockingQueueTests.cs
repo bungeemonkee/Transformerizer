@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Transformerizer.Collections;
 
-namespace Transformerizer.Tests.Unit
+namespace Transformerizer.Tests.Unit.Collections
 {
     [TestClass]
     [ExcludeFromCodeCoverage]

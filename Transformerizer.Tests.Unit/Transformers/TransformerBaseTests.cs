@@ -2,8 +2,10 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Transformerizer.Collections;
+using Transformerizer.Transformers;
 
-namespace Transformerizer.Tests.Unit
+namespace Transformerizer.Tests.Unit.Transformers
 {
     [TestClass]
     [ExcludeFromCodeCoverage]

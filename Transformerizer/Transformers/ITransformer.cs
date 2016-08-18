@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Transformerizer
+namespace Transformerizer.Transformers
 {
     /// <summary>
     ///     Defines the basic, non-generic, transformer functionality.

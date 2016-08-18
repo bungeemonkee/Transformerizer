@@ -1,4 +1,4 @@
-﻿namespace Transformerizer
+﻿namespace Transformerizer.Methods
 {
     /// <summary>
     ///     A transformation that takes a single item and returns a single item.

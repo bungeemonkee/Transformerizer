@@ -1,5 +1,7 @@
-﻿
-namespace Transformerizer
+﻿using Transformerizer.Collections;
+using Transformerizer.Methods;
+
+namespace Transformerizer.Transformers
 {
     /// <summary>
     ///     An <see cref="ITransformer{TProduce,TConsume}" /> that processes <see cref="Transform{TProduce,TConsume}" />
@@ -45,7 +47,7 @@ namespace Transformerizer
         }
 
         /// <summary>
-        ///     See <see cref="TransformerBase{TProduce,TConsume}.ProcessConsume(TConsume)" />.
+        ///     See <see cref="TransformerBase{TConsume}.ProcessConsume(TConsume)" />.
         /// </summary>
         protected override void ProcessConsume(TConsume consume)
         {

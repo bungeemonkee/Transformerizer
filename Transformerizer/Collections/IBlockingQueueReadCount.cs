@@ -1,5 +1,5 @@
 ﻿
-namespace Transformerizer
+namespace Transformerizer.Collections
 {
     /// <summary>
     /// Defines a blocking queue with a count.

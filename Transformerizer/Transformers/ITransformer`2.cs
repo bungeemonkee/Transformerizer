@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace Transformerizer
+﻿namespace Transformerizer.Transformers
 {
     /// <summary>
     ///     Defines a <see cref="ITransformer" /> that produces and consumes specific types.

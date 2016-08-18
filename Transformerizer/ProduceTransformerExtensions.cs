@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Transformerizer.Methods;
+using Transformerizer.Transformers;
 
 namespace Transformerizer
 {
@@ -10,6 +12,54 @@ namespace Transformerizer
     /// </summary>
     public static class ProduceTransformerExtensions
     {
+        /// <summary>
+        ///     Add a new transformation to a chain.
+        /// </summary>
+        public static ITransformer<TProduce, TConsume> ThenTransform<TProduce, TConsume>(this IProduceTransformer<TConsume> transformer, Transform<TProduce, TConsume> transform)
+        {
+            return new Transformer<TProduce, TConsume>(transformer.Produce, transform, transformer);
+        }
+
+        /// <summary>
+        ///     Add a new transformation to a chain.
+        /// </summary>
+        public static ITransformer<TProduce, TConsume> ThenTransform<TProduce, TConsume>(this IProduceTransformer<TConsume> transformer, Transform<TProduce, TConsume> transform, int threads)
+        {
+            return new Transformer<TProduce, TConsume>(transformer.Produce, transform, transformer, threads);
+        }
+
+        /// <summary>
+        ///     Add a new transformation to a chain.
+        /// </summary>
+        public static ITransformer<TProduce, TConsume> ThenTransformMany<TProduce, TConsume>(this IProduceTransformer<TConsume> transformer, TransformMany<TProduce, TConsume> transform)
+        {
+            return new TransformerMany<TProduce, TConsume>(transformer.Produce, transform, transformer);
+        }
+
+        /// <summary>
+        ///     Add a new transformation to a chain.
+        /// </summary>
+        public static IConsumeTransformer<TConsume> ThenTransformVoid<TConsume>(this IProduceTransformer<TConsume> transformer, TransformVoid<TConsume> transform, int threads)
+        {
+            return new TransformerVoid<TConsume>(transformer.Produce, transform, transformer, threads);
+        }
+
+        /// <summary>
+        ///     Add a new transformation to end a chain.
+        /// </summary>
+        public static IConsumeTransformer<TConsume> ThenTransformVoid<TConsume>(this IProduceTransformer<TConsume> transformer, TransformVoid<TConsume> transform)
+        {
+            return new TransformerVoid<TConsume>(transformer.Produce, transform, transformer);
+        }
+
+        /// <summary>
+        ///     Add a new transformation to end a chain.
+        /// </summary>
+        public static ITransformer<TProduce, TConsume> ThenTransformMany<TProduce, TConsume>(this IProduceTransformer<TConsume> transformer, TransformMany<TProduce, TConsume> transform, int threads)
+        {
+            return new TransformerMany<TProduce, TConsume>(transformer.Produce, transform, transformer, threads);
+        }
+
         /// <summary>
         ///     Ends a transformation by waiting (synchronously) for it to finish.
         /// </summary>

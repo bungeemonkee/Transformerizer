@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Transformerizer
+namespace Transformerizer.Collections
 {
     /// <summary>
     /// Defines a blocking queue's read functionality.

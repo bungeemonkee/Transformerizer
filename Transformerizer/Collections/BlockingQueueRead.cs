@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Transformerizer
+namespace Transformerizer.Collections
 {
     /// <summary>
     /// An <see cref="IBlockingQueueRead{T}"/> that wraps an <see cref="IEnumerable{T}"/> to provide simple forward-only access.

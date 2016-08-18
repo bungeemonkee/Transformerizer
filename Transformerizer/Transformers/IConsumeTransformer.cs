@@ -1,5 +1,7 @@
 ﻿
-namespace Transformerizer
+using Transformerizer.Collections;
+
+namespace Transformerizer.Transformers
 {
     /// <summary>
     ///     Defines a <see cref="ITransformer" /> that consumes items of a specific type.

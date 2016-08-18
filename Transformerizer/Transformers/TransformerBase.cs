@@ -2,11 +2,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Transformerizer
+namespace Transformerizer.Transformers
 {
+    /// <summary>
+    ///     The base of any <see cref="ITransformer" />.
+    /// </summary>
     public abstract class TransformerBase : ITransformer
     {
         private bool _hasStarted;
+        private int _completedThreads;
 
         /// <summary>
         /// The transformer before this one in the chain.
@@ -55,7 +59,56 @@ namespace Transformerizer
             Dispose(false);
         }
 
-        protected abstract void Process(object state);
+        private void Process(object state)
+        {
+            // Cast the input to the right object
+            var args = (Tuple<TaskCompletionSource<object>, Task>)state;
+
+            try
+            {
+                Process();
+            }
+            catch (Exception exception)
+            {
+                // Inform the task of the exception
+                args.Item1.TrySetException(exception);
+            }
+
+            // Determine if this is the last thread to complete
+            var completedThreads = Interlocked.Increment(ref _completedThreads);
+            if (completedThreads < ThreadCount) return;
+
+            // This is the last thread to complete so execute final processing
+            ProcessComplete();
+
+            if (args.Item2 != null)
+            {
+                // Now wait for the producing task to complete
+                // It should already be done but we need to collect any exceptions
+                try
+                {
+                    args.Item2.Wait();
+                }
+                catch (Exception e)
+                {
+                    // There was an exception in a dependent task
+                    args.Item1.TrySetException(e);
+                }
+            }
+
+            // Notify the handle that this is done
+            args.Item1.TrySetResult(null);
+        }
+
+        /// <summary>
+        /// The main process method. Executed on every thread simultaneously. Must continue the transformation in a loop until the transformation is complete.
+        /// </summary>
+        protected abstract void Process();
+
+        /// <summary>
+        /// Complete processing on the last thread to finish.
+        /// </summary>
+        protected virtual void ProcessComplete() { }
 
         /// <summary>
         ///     See <see cref="ITransformer.ExecuteAsync()" />.

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Transformerizer
+namespace Transformerizer.Methods
 {
     /// <summary>
     ///     A transformation that takes a single item and returns a collection of zero or more items.

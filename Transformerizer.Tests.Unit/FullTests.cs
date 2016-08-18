@@ -117,5 +117,55 @@ namespace Transformerizer.Tests.Unit
 
             CollectionAssert.AreEquivalent(numbers, result);
         }
+
+        [TestMethod]
+        [Timeout(1000)]
+        public void FullTest_08()
+        {
+            var chars = new char[1];
+            var strings = new[] { "1", "2", "3", "4", "5" };
+
+            strings
+                .BeginTransformVoid(x => x.CopyTo(0, chars, 0, 1))
+                .EndTransformVoid();
+        }
+
+        [TestMethod]
+        [Timeout(1000)]
+        public void FullTest_09()
+        {
+            var chars = new char[1];
+            var strings = new[] { "1", "2", "3", "4", "5" };
+
+            strings
+                .BeginTransformVoid(x => x.CopyTo(0, chars, 0, 1), 3)
+                .EndTransformVoid();
+        }
+
+        [TestMethod]
+        [Timeout(1000)]
+        public void FullTest_10()
+        {
+            var chars = new char[2];
+            var strings = new[] { "1", "2", "3", "4", "5" };
+
+            strings
+                .BeginTransform(x => x + "0")
+                .ThenTransformVoid(x => x.CopyTo(0, chars, 0, 2))
+                .EndTransformVoid();
+        }
+
+        [TestMethod]
+        [Timeout(1000)]
+        public async Task FullTest_11()
+        {
+            var chars = new char[2];
+            var strings = new[] { "1", "2", "3", "4", "5" };
+
+            await strings
+                .BeginTransform(x => x + "0")
+                .ThenTransformVoid(x => x.CopyTo(0, chars, 0, 2), 3)
+                .EndTransformVoidAsync();
+        }
     }
 }

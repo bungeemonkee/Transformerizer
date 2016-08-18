@@ -36,25 +36,28 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockingQueue.cs" />
+    <Compile Include="Collections\BlockingQueue.cs" />
+    <Compile Include="ConsumeTransformerExtensions.cs" />
     <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="IBlockingQueue.cs" />
-    <Compile Include="IBlockingQueueReadCount.cs" />
-    <Compile Include="ITransformer.cs" />
-    <Compile Include="IProduceTransformer.cs" />
-    <Compile Include="IConsumeTransformer.cs" />
-    <Compile Include="IBlockingQueueRead.cs" />
-    <Compile Include="ITransformer`2.cs" />
+    <Compile Include="Collections\IBlockingQueue.cs" />
+    <Compile Include="Collections\IBlockingQueueReadCount.cs" />
+    <Compile Include="Methods\TransformVoid.cs" />
+    <Compile Include="Transformers\ITransformer.cs" />
+    <Compile Include="Transformers\IProduceTransformer.cs" />
+    <Compile Include="Transformers\IConsumeTransformer.cs" />
+    <Compile Include="Collections\IBlockingQueueRead.cs" />
+    <Compile Include="Transformers\ITransformer`2.cs" />
     <Compile Include="ProduceTransformerExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BlockingQueueRead.cs" />
-    <Compile Include="Transform.cs" />
-    <Compile Include="Transformer.cs" />
-    <Compile Include="TransformerBase.cs" />
-    <Compile Include="TransformerBase`2.cs" />
-    <Compile Include="TransformerExtensions.cs" />
-    <Compile Include="TransformerMany.cs" />
-    <Compile Include="TransformMany.cs" />
+    <Compile Include="Collections\BlockingQueueRead.cs" />
+    <Compile Include="Methods\Transform.cs" />
+    <Compile Include="Transformers\Transformer.cs" />
+    <Compile Include="Transformers\TransformerBase.cs" />
+    <Compile Include="Transformers\TransformerBase`1.cs" />
+    <Compile Include="Transformers\TransformerBase`2.cs" />
+    <Compile Include="Transformers\TransformerMany.cs" />
+    <Compile Include="Methods\TransformMany.cs" />
+    <Compile Include="Transformers\TransformerVoid.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Transformerizer.nuspec" />
