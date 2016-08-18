@@ -6,6 +6,9 @@ using System.Threading;
 
 namespace Transformerizer.Collections
 {
+    /// <summary>
+    ///     An <see cref="IBlockingQueue{T}" />.
+    /// </summary>
     public class BlockingQueue<T> : IBlockingQueue<T>
     {
         private readonly Queue<T> _queue = new Queue<T>();
@@ -13,8 +16,14 @@ namespace Transformerizer.Collections
         private readonly ManualResetEvent _addedHandle = new ManualResetEvent(false);
         private volatile bool _completeAdding;
         
+        /// <summary>
+        ///     See <see cref="IBlockingQueueReadCount{T}.Count" />.
+        /// </summary>
         public int Count => _queue.Count;
 
+        /// <summary>
+        ///     See <see cref="IBlockingQueue{T}.CompleteAdding()" />.
+        /// </summary>
         public void CompleteAdding()
         {
             _completeAdding = true;
@@ -29,11 +38,17 @@ namespace Transformerizer.Collections
             _modifySemaphore.Release();
         }
 
+        /// <summary>
+        ///     See <see cref="IBlockingQueue{T}.TryAdd(T)" />.
+        /// </summary>
         public bool TryAdd(T item)
         {
             return TryAdd(Enumerable.Repeat(item, 1));
         }
 
+        /// <summary>
+        ///     See <see cref="IBlockingQueue{T}.TryAdd(IEnumerable{T})" />.
+        /// </summary>
         public bool TryAdd(IEnumerable<T> items)
         {
             // If adding isn't allowed anymore then just fail
@@ -58,6 +73,9 @@ namespace Transformerizer.Collections
             return true;
         }
 
+        /// <summary>
+        ///     See <see cref="IBlockingQueueRead{T}.TryTake(int,out T[])" />.
+        /// </summary>
         public bool TryTake(int count, out T[] items)
         {
             // Wait for the modification semaphore
@@ -109,6 +127,9 @@ namespace Transformerizer.Collections
             return true;
         }
 
+        /// <summary>
+        ///     See <see cref="IEnumerable{T}.GetEnumerator()" />.
+        /// </summary>
         public IEnumerator<T> GetEnumerator()
         {
             return _queue.GetEnumerator();

@@ -54,6 +54,9 @@ namespace Transformerizer.Collections
             return true;
         }
 
+        /// <summary>
+        ///     See <see cref="IEnumerable{T}.GetEnumerator()" />.
+        /// </summary>
         public IEnumerator<T> GetEnumerator()
         {
             return _source.GetEnumerator();
