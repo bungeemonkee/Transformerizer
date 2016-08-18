@@ -19,7 +19,7 @@ namespace Transformerizer.Transformers
         /// </summary>
         public static readonly int DefaultThreadCount =
             Environment.ProcessorCount > 2
-                ? Environment.ProcessorCount/2
+                ? Environment.ProcessorCount / 2
                 : 1;
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Transformerizer.Transformers
         private void Process(object state)
         {
             // Cast the input to the right object
-            var args = (Tuple<TaskCompletionSource<object>, Task>) state;
+            var args = (Tuple<TaskCompletionSource<object>, Task>)state;
 
             try
             {
@@ -142,7 +142,12 @@ namespace Transformerizer.Transformers
             // Start all the work items for this process
             for (var i = 0; i < ThreadCount; ++i)
             {
-                ThreadPool.QueueUserWorkItem(Process, args);
+                var thread = new Thread((ParameterizedThreadStart)Process)
+                {
+                    IsBackground = true,
+                    Name = "Transformer Worker Thread"
+                };
+                thread.Start(args);
             }
 
             // Return the wait handle
