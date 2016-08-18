@@ -12,9 +12,7 @@ namespace Transformerizer
         private readonly SemaphoreSlim _modifySemaphore = new SemaphoreSlim(1, 1);
         private readonly ManualResetEvent _addedHandle = new ManualResetEvent(false);
         private volatile bool _completeAdding;
-
-        public bool HasCount => true;
-
+        
         public int Count => _queue.Count;
 
         public void CompleteAdding()
