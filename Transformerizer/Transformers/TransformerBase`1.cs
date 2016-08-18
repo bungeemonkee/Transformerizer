@@ -47,7 +47,7 @@ namespace Transformerizer.Transformers
 
 
         /// <summary>
-        ///     See <see cref="TransformerBase.Dispose(bool)"/>.
+        ///     See <see cref="TransformerBase.Dispose(bool)" />.
         /// </summary>
         protected override void Dispose(bool finalizing)
         {
@@ -60,7 +60,7 @@ namespace Transformerizer.Transformers
         }
 
         /// <summary>
-        /// See <see cref="TransformerBase.Process()"/>.
+        ///     See <see cref="TransformerBase.Process()" />.
         /// </summary>
         protected override void Process()
         {
@@ -100,9 +100,9 @@ namespace Transformerizer.Transformers
             {
                 // If there aren't enough items to fill the local thread buffer then scale the buffer down
                 var count = _consumeWithCount.Count;
-                if (size > 1 && count < size * ThreadCount)
+                if (size > 1 && count < size*ThreadCount)
                 {
-                    size = count / ThreadCount;
+                    size = count/ThreadCount;
                     if (size < 1)
                     {
                         size = 1;

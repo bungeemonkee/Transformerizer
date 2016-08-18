@@ -14,12 +14,12 @@ namespace Transformerizer.Tests.Unit
         [Timeout(1000)]
         public void FullTest_01()
         {
-            var strings = new[] { "1", "2", "3", "4", "5" };
-            var numbers = new[] { 10, 20, 30, 40, 50 };
+            var strings = new[] {"1", "2", "3", "4", "5"};
+            var numbers = new[] {10, 20, 30, 40, 50};
 
             var result = strings
                 .BeginTransform(int.Parse, 1)
-                .ThenTransform(x => x * 10)
+                .ThenTransform(x => x*10)
                 .EndTransform()
                 .ToArray();
 
@@ -30,12 +30,12 @@ namespace Transformerizer.Tests.Unit
         [Timeout(1000)]
         public void FullTest_02()
         {
-            var strings = new[] { "1", "2", "3", "4", "5" };
-            var numbers = new[] { 10, 20, 30, 40, 50 };
+            var strings = new[] {"1", "2", "3", "4", "5"};
+            var numbers = new[] {10, 20, 30, 40, 50};
 
             var result = strings
                 .BeginTransform(int.Parse, 3)
-                .ThenTransform(x => x * 10)
+                .ThenTransform(x => x*10)
                 .EndTransform()
                 .ToArray();
 
@@ -46,12 +46,12 @@ namespace Transformerizer.Tests.Unit
         [Timeout(1000)]
         public void FullTest_03()
         {
-            var strings = new[] { "1", "2", "3", "4", "5" };
-            var numbers = new[] { 1, 5, 10, 2, 10, 20, 3, 15, 30, 4, 20, 40, 5, 25, 50 };
+            var strings = new[] {"1", "2", "3", "4", "5"};
+            var numbers = new[] {1, 5, 10, 2, 10, 20, 3, 15, 30, 4, 20, 40, 5, 25, 50};
 
             var result = strings
                 .BeginTransform(int.Parse)
-                .ThenTransformMany(x => new[] { 1, 5, 10 }.Select(y => x * y))
+                .ThenTransformMany(x => new[] {1, 5, 10}.Select(y => x*y))
                 .EndTransform()
                 .ToArray();
 
@@ -62,12 +62,12 @@ namespace Transformerizer.Tests.Unit
         [Timeout(1000)]
         public void FullTest_04()
         {
-            var strings = new[] { "1", "2", "3", "4", "5" };
-            var numbers = new[] { 1, 5, 10, 2, 10, 20, 3, 15, 30, 4, 20, 40, 5, 25, 50 };
+            var strings = new[] {"1", "2", "3", "4", "5"};
+            var numbers = new[] {1, 5, 10, 2, 10, 20, 3, 15, 30, 4, 20, 40, 5, 25, 50};
 
             var result = strings
                 .BeginTransform(int.Parse, 3)
-                .ThenTransformMany(x => new[] { 1, 5, 10 }.Select(y => x * y), 5)
+                .ThenTransformMany(x => new[] {1, 5, 10}.Select(y => x*y), 5)
                 .EndTransform()
                 .ToArray();
 
@@ -79,11 +79,11 @@ namespace Transformerizer.Tests.Unit
         [ExpectedException(typeof(AggregateException))]
         public void FullTest_05()
         {
-            var strings = new[] { "1", "2", "3", "4", "5", "banana" };
+            var strings = new[] {"1", "2", "3", "4", "5", "banana"};
 
             var result = strings
                 .BeginTransform(int.Parse, 1)
-                .ThenTransformMany(x => new[] { 1, 5, 10 }.Select(y => x * y), 1)
+                .ThenTransformMany(x => new[] {1, 5, 10}.Select(y => x*y), 1)
                 .EndTransform()
                 .ToArray();
         }
@@ -93,11 +93,11 @@ namespace Transformerizer.Tests.Unit
         [ExpectedException(typeof(AggregateException))]
         public void FullTest_06()
         {
-            var strings = new[] { "5", "10", "15", "0" };
+            var strings = new[] {"5", "10", "15", "0"};
 
             var result = strings
                 .BeginTransform(int.Parse, 1)
-                .ThenTransform(x => 5 / x, 1)
+                .ThenTransform(x => 5/x, 1)
                 .EndTransform()
                 .ToArray();
         }
@@ -106,12 +106,12 @@ namespace Transformerizer.Tests.Unit
         [Timeout(1000)]
         public async Task FullTest_07()
         {
-            var strings = new[] { "1", "2", "3", "4", "5" };
-            var numbers = new[] { 1, 5, 10, 2, 10, 20, 3, 15, 30, 4, 20, 40, 5, 25, 50 };
+            var strings = new[] {"1", "2", "3", "4", "5"};
+            var numbers = new[] {1, 5, 10, 2, 10, 20, 3, 15, 30, 4, 20, 40, 5, 25, 50};
 
             var result = (await strings
                 .BeginTransform(int.Parse, 3)
-                .ThenTransformMany(x => new[] { 1, 5, 10 }.Select(y => x * y), 5)
+                .ThenTransformMany(x => new[] {1, 5, 10}.Select(y => x*y), 5)
                 .EndTransformAsync())
                 .ToArray();
 
@@ -123,7 +123,7 @@ namespace Transformerizer.Tests.Unit
         public void FullTest_08()
         {
             var chars = new char[1];
-            var strings = new[] { "1", "2", "3", "4", "5" };
+            var strings = new[] {"1", "2", "3", "4", "5"};
 
             strings
                 .BeginTransformVoid(x => x.CopyTo(0, chars, 0, 1))
@@ -135,7 +135,7 @@ namespace Transformerizer.Tests.Unit
         public void FullTest_09()
         {
             var chars = new char[1];
-            var strings = new[] { "1", "2", "3", "4", "5" };
+            var strings = new[] {"1", "2", "3", "4", "5"};
 
             strings
                 .BeginTransformVoid(x => x.CopyTo(0, chars, 0, 1), 3)
@@ -147,7 +147,7 @@ namespace Transformerizer.Tests.Unit
         public void FullTest_10()
         {
             var chars = new char[2];
-            var strings = new[] { "1", "2", "3", "4", "5" };
+            var strings = new[] {"1", "2", "3", "4", "5"};
 
             strings
                 .BeginTransform(x => x + "0")
@@ -160,7 +160,7 @@ namespace Transformerizer.Tests.Unit
         public async Task FullTest_11()
         {
             var chars = new char[2];
-            var strings = new[] { "1", "2", "3", "4", "5" };
+            var strings = new[] {"1", "2", "3", "4", "5"};
 
             await strings
                 .BeginTransform(x => x + "0")

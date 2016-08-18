@@ -5,15 +5,16 @@ using System.Collections.Generic;
 namespace Transformerizer.Collections
 {
     /// <summary>
-    /// An <see cref="IBlockingQueueRead{T}"/> that wraps an <see cref="IEnumerable{T}"/> to provide simple forward-only access.
+    ///     An <see cref="IBlockingQueueRead{T}" /> that wraps an <see cref="IEnumerable{T}" /> to provide simple forward-only
+    ///     access.
     /// </summary>
     public class BlockingQueueRead<T> : IBlockingQueueRead<T>
     {
         private readonly IEnumerable<T> _source;
         private readonly IEnumerator<T> _enumerator;
-        
+
         /// <summary>
-        /// Create a new <see cref="BlockingQueueRead{T}"/> that reads from the given source.
+        ///     Create a new <see cref="BlockingQueueRead{T}" /> that reads from the given source.
         /// </summary>
         public BlockingQueueRead(IEnumerable<T> source)
         {
@@ -22,7 +23,7 @@ namespace Transformerizer.Collections
         }
 
         /// <summary>
-        /// See <see cref="IBlockingQueueRead{T}.TryTake(int, out T[])"/>.
+        ///     See <see cref="IBlockingQueueRead{T}.TryTake(int, out T[])" />.
         /// </summary>
         public bool TryTake(int count, out T[] items)
         {

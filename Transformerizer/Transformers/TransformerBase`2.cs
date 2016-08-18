@@ -38,7 +38,7 @@ namespace Transformerizer.Transformers
 
 
         /// <summary>
-        /// See <see cref="TransformerBase.ProcessComplete()"/>.
+        ///     See <see cref="TransformerBase.ProcessComplete()" />.
         /// </summary>
         protected override void ProcessComplete()
         {

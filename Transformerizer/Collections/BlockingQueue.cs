@@ -15,7 +15,7 @@ namespace Transformerizer.Collections
         private readonly SemaphoreSlim _modifySemaphore = new SemaphoreSlim(1, 1);
         private readonly ManualResetEvent _addedHandle = new ManualResetEvent(false);
         private volatile bool _completeAdding;
-        
+
         /// <summary>
         ///     See <see cref="IBlockingQueueReadCount{T}.Count" />.
         /// </summary>

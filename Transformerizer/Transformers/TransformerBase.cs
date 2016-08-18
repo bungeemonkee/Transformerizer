@@ -9,14 +9,6 @@ namespace Transformerizer.Transformers
     /// </summary>
     public abstract class TransformerBase : ITransformer
     {
-        private bool _hasStarted;
-        private int _completedThreads;
-
-        /// <summary>
-        /// The transformer before this one in the chain.
-        /// </summary>
-        protected readonly ITransformer DependentTransformer;
-
         /// <summary>
         ///     The default number of threads used for any <see cref="ITransformer{TProduce, TConsume}" /> when it has no dependent
         ///     transformation.
@@ -27,8 +19,16 @@ namespace Transformerizer.Transformers
         /// </summary>
         public static readonly int DefaultThreadCount =
             Environment.ProcessorCount > 2
-                ? Environment.ProcessorCount / 2
+                ? Environment.ProcessorCount/2
                 : 1;
+
+        /// <summary>
+        ///     The transformer before this one in the chain.
+        /// </summary>
+        protected readonly ITransformer DependentTransformer;
+
+        private bool _hasStarted;
+        private int _completedThreads;
 
         /// <summary>
         ///     See <see cref="ITransformer.ThreadCount" />.
@@ -36,7 +36,7 @@ namespace Transformerizer.Transformers
         public int ThreadCount { get; }
 
         /// <summary>
-        /// See <see cref="ITransformer.PreserveNulls"/>.
+        ///     See <see cref="ITransformer.PreserveNulls" />.
         /// </summary>
         public bool PreserveNulls { get; set; }
 
@@ -62,7 +62,7 @@ namespace Transformerizer.Transformers
         private void Process(object state)
         {
             // Cast the input to the right object
-            var args = (Tuple<TaskCompletionSource<object>, Task>)state;
+            var args = (Tuple<TaskCompletionSource<object>, Task>) state;
 
             try
             {
@@ -101,14 +101,17 @@ namespace Transformerizer.Transformers
         }
 
         /// <summary>
-        /// The main process method. Executed on every thread simultaneously. Must continue the transformation in a loop until the transformation is complete.
+        ///     The main process method. Executed on every thread simultaneously. Must continue the transformation in a loop until
+        ///     the transformation is complete.
         /// </summary>
         protected abstract void Process();
 
         /// <summary>
-        /// Complete processing on the last thread to finish.
+        ///     Complete processing on the last thread to finish.
         /// </summary>
-        protected virtual void ProcessComplete() { }
+        protected virtual void ProcessComplete()
+        {
+        }
 
         /// <summary>
         ///     See <see cref="ITransformer.ExecuteAsync()" />.

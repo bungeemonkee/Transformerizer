@@ -24,7 +24,7 @@ namespace Transformerizer.Tests.Unit
             var stopwatch = Stopwatch.StartNew();
 
             var result1 = new ConcurrentBag<Tuple<long, bool>>();
-            Parallel.ForEach(fibonacci1, new ParallelOptions { MaxDegreeOfParallelism = 10 }, x =>
+            Parallel.ForEach(fibonacci1, new ParallelOptions {MaxDegreeOfParallelism = 10}, x =>
             {
                 var result = ComputeIsPrime(x);
                 result1.Add(result);
@@ -40,7 +40,7 @@ namespace Transformerizer.Tests.Unit
             var time2 = stopwatch.ElapsedTicks;
 
             var difference = time1 - time2;
-            var percent = difference / ((time1 + time2) / 2D) * 100D;
+            var percent = difference/((time1 + time2)/2D)*100D;
             Trace.WriteLine($"PerformanceTest_01 timing (in ticks) - Parallel.ForEach: {time1} Transformerizer: {time2} Difference: {difference} ({percent:##.00}%)");
 
             Assert.AreEqual(result1.Count, result2.Count);
@@ -50,10 +50,10 @@ namespace Transformerizer.Tests.Unit
         [Ignore]
         private static Tuple<long, bool> ComputeIsPrime(long value)
         {
-            var root = (long)Math.Ceiling(Math.Sqrt(value));
+            var root = (long) Math.Ceiling(Math.Sqrt(value));
 
             var isPrime = new LongRange(1L, root - 1L)
-                .Count(x => value % x == 0L) == 1;
+                .Count(x => value%x == 0L) == 1;
 
             return new Tuple<long, bool>(value, isPrime);
         }

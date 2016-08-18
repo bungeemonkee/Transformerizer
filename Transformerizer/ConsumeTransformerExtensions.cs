@@ -5,7 +5,7 @@ using Transformerizer.Transformers;
 namespace Transformerizer
 {
     /// <summary>
-    /// Extensions for <see cref="IConsumeTransformer{TConsume}"/> objects.
+    ///     Extensions for <see cref="IConsumeTransformer{TConsume}" /> objects.
     /// </summary>
     public static class ConsumeTransformerExtensions
     {

@@ -33,7 +33,7 @@ namespace Transformerizer.Tests.Unit.Collections
         [TestMethod]
         public void TryTake_Returns_Fewer_Items_If_Enough_Are_Not_Available()
         {
-            var source = new [] { 1, 2, 3, 4, 5 };
+            var source = new[] {1, 2, 3, 4, 5};
             var queue = new BlockingQueueRead<int>(source);
 
             int[] value;

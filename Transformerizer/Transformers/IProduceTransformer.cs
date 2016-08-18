@@ -1,5 +1,4 @@
-﻿
-using Transformerizer.Collections;
+﻿using Transformerizer.Collections;
 
 namespace Transformerizer.Transformers
 {

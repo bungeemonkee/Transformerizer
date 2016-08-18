@@ -8,7 +8,7 @@ using Transformerizer.Transformers;
 namespace Transformerizer
 {
     /// <summary>
-    /// Extensions for <see cref="IProduceTransformer{TProduce}"/> objects.
+    ///     Extensions for <see cref="IProduceTransformer{TProduce}" /> objects.
     /// </summary>
     public static class ProduceTransformerExtensions
     {
