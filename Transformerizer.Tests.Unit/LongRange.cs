@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Transformerizer.Tests.Unit
 {
+    [ExcludeFromCodeCoverage]
     public class LongRange : IEnumerable<long>
     {
         public long Start { get; }
