@@ -14,6 +14,12 @@ namespace Transformerizer
         int ThreadCount { get; }
 
         /// <summary>
+        ///     By default when a transform function returns a null value it will not be copied into the next buffer.
+        ///     This allows that behavior to be overwritten.
+        /// </summary>
+        bool PreserveNulls { get; set; }
+
+        /// <summary>
         ///     Begins executing the transformation (and any dependent transformations) and returns a <see cref="Task" /> that can
         ///     be waited on for completion of the transformation.
         /// </summary>

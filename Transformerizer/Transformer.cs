@@ -49,8 +49,14 @@ namespace Transformerizer
         /// </summary>
         protected override void ProcessConsume(TConsume consume)
         {
+            // Get the result of the transformation
             var result = _transform(consume);
-            Produce.TryAdd(result);
+
+            // If the result isn't null or preserve nulls is set then add the value to the results
+            if (result != null || PreserveNulls)
+            {
+                Produce.TryAdd(result);
+            }
         }
     }
 }

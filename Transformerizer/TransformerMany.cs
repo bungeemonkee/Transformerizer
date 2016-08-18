@@ -1,4 +1,7 @@
 ﻿
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Transformerizer
 {
     /// <summary>
@@ -49,8 +52,23 @@ namespace Transformerizer
         /// </summary>
         protected override void ProcessConsume(TConsume consume)
         {
+            // Do the transformation
             var results = _transform(consume);
-            Produce.TryAdd(results);
+
+            // If nulls are not being preserved then remove any null values
+            if (!PreserveNulls)
+            {
+                results = results.Where(x => x != null);
+            }
+
+            // Convert the results to some kind of collection (but they probably already are)
+            var list = results as ICollection<TProduce> ?? results.ToList();
+
+            // If there is anything to add then add it
+            if (list.Count > 0)
+            {
+                Produce.TryAdd(list);
+            }
         }
     }
 }

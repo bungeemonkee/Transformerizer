@@ -29,12 +29,19 @@ namespace Transformerizer
         public int ThreadCount { get; }
 
         /// <summary>
+        /// See <see cref="ITransformer.PreserveNulls"/>.
+        /// </summary>
+        public bool PreserveNulls { get; set; }
+
+        /// <summary>
         ///     Create a TransformerBase.
         /// </summary>
         protected TransformerBase(ITransformer dependentTransformer, int threads)
         {
             DependentTransformer = dependentTransformer;
             ThreadCount = threads;
+
+            PreserveNulls = DependentTransformer?.PreserveNulls ?? false;
         }
 
         /// <summary>
