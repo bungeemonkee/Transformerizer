@@ -8,6 +8,9 @@ namespace Transformerizer
     {
         private bool _hasStarted;
 
+        /// <summary>
+        /// The transformer before this one in the chain.
+        /// </summary>
         protected readonly ITransformer DependentTransformer;
 
         /// <summary>
