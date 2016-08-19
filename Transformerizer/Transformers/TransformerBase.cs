@@ -19,7 +19,7 @@ namespace Transformerizer.Transformers
         /// </summary>
         public static readonly int DefaultThreadCount =
             Environment.ProcessorCount > 2
-                ? Environment.ProcessorCount / 2
+                ? Environment.ProcessorCount/2
                 : 1;
 
         /// <summary>
@@ -52,17 +52,97 @@ namespace Transformerizer.Transformers
         }
 
         /// <summary>
-        ///     Finalizer. Forced disposal of this instance.
+        ///     The main process method. Executed on every thread simultaneously. Must continue the transformation in a loop until
+        ///     the transformation is complete.
         /// </summary>
-        ~TransformerBase()
+        protected abstract void Process();
+
+        /// <summary>
+        ///     Complete processing on the last thread to finish.
+        /// </summary>
+        protected abstract void ProcessComplete();
+
+        private static void ProcessContinue(Task innerTask, object outerTask)
         {
-            Dispose(false);
+            var outerTaskSource = (TaskCompletionSource<object>) outerTask;
+
+            if (innerTask.IsCanceled)
+            {
+                outerTaskSource.TrySetCanceled();
+            }
+
+            if (innerTask.IsFaulted)
+            {
+                outerTaskSource.TrySetException(innerTask.Exception);
+            }
+
+            outerTaskSource.TrySetResult(null);
+        }
+
+        /// <summary>
+        ///     See <see cref="ITransformer.ExecuteAsync()" />.
+        /// </summary>
+        public Task ExecuteAsync()
+        {
+            lock (this)
+            {
+                // Make sure this transformation has not been started already
+                if (_hasStarted)
+                {
+                    throw new InvalidOperationException("This transformation has already been started.");
+                }
+
+                // Record the start of this transformation
+                _hasStarted = true;
+            }
+
+            // If there is a dependent transformer then start it
+            var dependentTask = DependentTransformer?.ExecuteAsync();
+
+            // Create the task that we will complete when this transformation is complete
+            var taskCompletionSource = new TaskCompletionSource<object>();
+
+            // Create the arguments for the process function
+            var args = new Tuple<TaskCompletionSource<object>, Task>(taskCompletionSource, dependentTask);
+
+            // Start all the work items for this process
+            for (var i = 0; i < ThreadCount; ++i)
+            {
+                var thread = new Thread((ParameterizedThreadStart) Process)
+                {
+                    IsBackground = true,
+                    Name = "Transformer Worker Thread"
+                };
+                thread.Start(args);
+            }
+
+            // Return the wait handle
+            return taskCompletionSource.Task;
+        }
+
+        /// <summary>
+        ///     See <see cref="IDisposable.Dispose()" />.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Disposes of this instance.
+        /// </summary>
+        /// <param name="finalizing">True if called from <see cref="Dispose()" />, false otherwise.</param>
+        protected virtual void Dispose(bool finalizing)
+        {
+            // If we can dispose of the dependent transformer we must
+            DependentTransformer?.Dispose();
         }
 
         private void Process(object state)
         {
             // Cast the input to the right object
-            var args = (Tuple<TaskCompletionSource<object>, Task>)state;
+            var args = (Tuple<TaskCompletionSource<object>, Task>) state;
 
             try
             {
@@ -96,92 +176,12 @@ namespace Transformerizer.Transformers
             }
         }
 
-        private static void ProcessContinue(Task innerTask, object outerTask)
+        /// <summary>
+        ///     Finalizer. Forced disposal of this instance.
+        /// </summary>
+        ~TransformerBase()
         {
-            var outerTaskSource = (TaskCompletionSource<object>) outerTask;
-
-            if (innerTask.IsCanceled)
-            {
-                outerTaskSource.TrySetCanceled();
-            }
-
-            if (innerTask.IsFaulted)
-            {
-                outerTaskSource.TrySetException(innerTask.Exception);
-            }
-
-            outerTaskSource.TrySetResult(null);
-        }
-
-        /// <summary>
-        ///     The main process method. Executed on every thread simultaneously. Must continue the transformation in a loop until
-        ///     the transformation is complete.
-        /// </summary>
-        protected abstract void Process();
-
-        /// <summary>
-        ///     Complete processing on the last thread to finish.
-        /// </summary>
-        protected abstract void ProcessComplete();
-
-        /// <summary>
-        ///     See <see cref="ITransformer.ExecuteAsync()" />.
-        /// </summary>
-        public Task ExecuteAsync()
-        {
-            lock (this)
-            {
-                // Make sure this transformation has not been started already
-                if (_hasStarted)
-                {
-                    throw new InvalidOperationException("This transformation has already been started.");
-                }
-
-                // Record the start of this transformation
-                _hasStarted = true;
-            }
-
-            // If there is a dependent transformer then start it
-            var dependentTask = DependentTransformer?.ExecuteAsync();
-
-            // Create the task that we will complete when this transformation is complete
-            var taskCompletionSource = new TaskCompletionSource<object>();
-
-            // Create the arguments for the process function
-            var args = new Tuple<TaskCompletionSource<object>, Task>(taskCompletionSource, dependentTask);
-
-            // Start all the work items for this process
-            for (var i = 0; i < ThreadCount; ++i)
-            {
-                var thread = new Thread((ParameterizedThreadStart)Process)
-                {
-                    IsBackground = true,
-                    Name = "Transformer Worker Thread"
-                };
-                thread.Start(args);
-            }
-
-            // Return the wait handle
-            return taskCompletionSource.Task;
-        }
-
-        /// <summary>
-        ///     See <see cref="IDisposable.Dispose()" />.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     Disposes of this instance.
-        /// </summary>
-        /// <param name="finalizing">True if called from <see cref="Dispose()" />, false otherwise.</param>
-        protected virtual void Dispose(bool finalizing)
-        {
-            // If we can dispose of the dependent transformer we must
-            DependentTransformer?.Dispose();
+            Dispose(false);
         }
     }
 }

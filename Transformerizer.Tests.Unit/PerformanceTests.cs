@@ -12,6 +12,17 @@ namespace Transformerizer.Tests.Unit
     [ExcludeFromCodeCoverage]
     public class PerformanceTests
     {
+        [Ignore]
+        private static Tuple<long, bool> ComputeIsPrime(long value)
+        {
+            var root = (long) Math.Ceiling(Math.Sqrt(value));
+
+            var isPrime = new LongRange(1L, root - 1L)
+                .Count(x => value%x == 0L) == 1;
+
+            return new Tuple<long, bool>(value, isPrime);
+        }
+
         [TestMethod]
         public void PerformanceTest_01()
         {
@@ -45,17 +56,6 @@ namespace Transformerizer.Tests.Unit
 
             Assert.AreEqual(result1.Count, result2.Count);
             Assert.IsTrue(time2 < time1);
-        }
-
-        [Ignore]
-        private static Tuple<long, bool> ComputeIsPrime(long value)
-        {
-            var root = (long) Math.Ceiling(Math.Sqrt(value));
-
-            var isPrime = new LongRange(1L, root - 1L)
-                .Count(x => value%x == 0L) == 1;
-
-            return new Tuple<long, bool>(value, isPrime);
         }
     }
 }
