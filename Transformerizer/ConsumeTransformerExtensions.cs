@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Transformerizer.Statistics;
 using Transformerizer.Transformers;
 
 namespace Transformerizer
@@ -16,9 +18,28 @@ namespace Transformerizer
         /// <param name="transformer">The transformer to finish.</param>
         public static void EndTransformVoid<TConsume>(this IConsumeTransformer<TConsume> transformer)
         {
+            EndTransformVoid(transformer, null);
+        }
+
+        /// <summary>
+        ///     Ends a transformation by waiting (synchronously) for it to finish.
+        /// </summary>
+        /// <typeparam name="TConsume">The type of the items consumed by .</typeparam>
+        /// <param name="transformer">The transformer to finish.</param>
+        /// <param name="statisticsCallback">A callback to be invoked with the statistics for this transformer (assuming it supports providing statistics).</param>
+        public static void EndTransformVoid<TConsume>(this IConsumeTransformer<TConsume> transformer, Action<ITransformerStatistics> statisticsCallback)
+        {
             using (transformer)
             {
                 transformer.ExecuteAsync().Wait();
+
+                if (statisticsCallback == null) return;
+
+                var statistics = (transformer as IStatisticsSource)?.GetStatistics();
+                if (statistics != null)
+                {
+                    statisticsCallback(statistics);
+                }
             }
         }
 
@@ -30,8 +51,20 @@ namespace Transformerizer
         /// <returns>The results of the transformation.</returns>
         public static Task EndTransformVoidAsync<TConsume>(this IConsumeTransformer<TConsume> transformer)
         {
+            return EndTransformVoidAsync(transformer, null);
+        }
+
+        /// <summary>
+        ///     Ends a transformation by waiting (asynchronously) for it to finish.
+        /// </summary>
+        /// <typeparam name="TConsume">The type of the items consumed.</typeparam>
+        /// <param name="transformer">The transformer to finish.</param>
+        /// <param name="statisticsCallback">A callback to be invoked with the statistics for this transformer (assuming it supports providing statistics).</param>
+        /// <returns>The results of the transformation.</returns>
+        public static Task EndTransformVoidAsync<TConsume>(this IConsumeTransformer<TConsume> transformer, Action<ITransformerStatistics> statisticsCallback)
+        {
             // Create a task completion for when we've gotten the results from the transformer
-            var taskCompletionSource = new TaskCompletionSource<object>();
+            var taskCompletionSource = new TaskCompletionSource<IList<object>>();
 
             try
             {
@@ -39,36 +72,8 @@ namespace Transformerizer
                 var transformTask = transformer.ExecuteAsync();
 
                 // When the transform is done resolve the task completion
-                transformTask.ContinueWith(t =>
-                {
-                    try
-                    {
-                        switch (t.Status)
-                        {
-                            case TaskStatus.Canceled:
-                                // Set the task result to canceled
-                                taskCompletionSource.SetCanceled();
-                                break;
-                            case TaskStatus.Faulted:
-                                // Set the task result to the exception in the transformation task
-                                taskCompletionSource.SetException(t.Exception);
-                                break;
-                            default:
-                                // Set the task result to the transformer's production collection
-                                taskCompletionSource.SetResult(null);
-                                break;
-                        }
-                    }
-                    catch (Exception exception)
-                    {
-                        taskCompletionSource.TrySetException(exception);
-                    }
-                    finally
-                    {
-                        // Dispose of the transformer now that we got everything from it
-                        transformer.Dispose();
-                    }
-                });
+                var arguments = new Tuple<ITransformer, TaskCompletionSource<IList<object>>, Action<ITransformerStatistics>>(transformer, taskCompletionSource, statisticsCallback);
+                transformTask.ContinueWith(AsyncUtility.Continuation<object>, arguments);
             }
             catch
             {

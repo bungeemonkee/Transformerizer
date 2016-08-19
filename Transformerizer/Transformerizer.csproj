@@ -36,12 +36,18 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncUtility.cs" />
     <Compile Include="Collections\BlockingQueue.cs" />
     <Compile Include="ConsumeTransformerExtensions.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Collections\IBlockingQueue.cs" />
     <Compile Include="Collections\IBlockingQueueReadCount.cs" />
     <Compile Include="Methods\TransformVoid.cs" />
+    <Compile Include="Statistics\IStatisticsSource.cs" />
+    <Compile Include="Statistics\IThreadStatistics.cs" />
+    <Compile Include="Statistics\ITransformerStatistics.cs" />
+    <Compile Include="Statistics\ThreadStatistics.cs" />
+    <Compile Include="Statistics\TransformerStatistics.cs" />
     <Compile Include="Transformers\ITransformer.cs" />
     <Compile Include="Transformers\IProduceTransformer.cs" />
     <Compile Include="Transformers\IConsumeTransformer.cs" />

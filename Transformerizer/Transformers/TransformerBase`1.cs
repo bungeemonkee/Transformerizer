@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using Transformerizer.Collections;
+using Transformerizer.Statistics;
 
 namespace Transformerizer.Transformers
 {
@@ -7,9 +10,10 @@ namespace Transformerizer.Transformers
     ///     The base of any <see cref="IConsumeTransformer{TConsume}" />.
     /// </summary>
     /// <typeparam name="TConsume">The type of items consumed.</typeparam>
-    public abstract class TransformerBase<TConsume> : TransformerBase, IConsumeTransformer<TConsume>
+    public abstract class TransformerBase<TConsume> : TransformerBase, IConsumeTransformer<TConsume>, IStatisticsSource
     {
         private readonly IBlockingQueueReadCount<TConsume> _consumeWithCount;
+        private readonly ConcurrentBag<IThreadStatistics> _statistics;
 
         private volatile bool _hasError;
 
@@ -37,6 +41,7 @@ namespace Transformerizer.Transformers
             Consume = consume;
 
             _consumeWithCount = consume as IBlockingQueueReadCount<TConsume>;
+            _statistics = new ConcurrentBag<IThreadStatistics>();
         }
 
         /// <summary>
@@ -66,18 +71,34 @@ namespace Transformerizer.Transformers
         {
             const int bufferSize = 4;
 
+            var transformCount = 0;
+            var timeTotal = Stopwatch.StartNew();
+            var timeBufferWait = new Stopwatch();
+            var timeToFirstTransform = Stopwatch.StartNew();
+            var timeTransforming = new Stopwatch();
+
             try
             {
                 // Thread-local buffer of items to process
                 TConsume[] consume;
 
                 // Process all the input
+                timeBufferWait.Start();
                 while (!_hasError && GetBuffer(bufferSize, out consume))
                 {
+                    timeBufferWait.Stop();
+
                     foreach (var item in consume)
                     {
+                        ++transformCount;
+                        timeToFirstTransform.Stop();
+
+                        timeTransforming.Start();
                         ProcessConsume(item);
+                        timeTransforming.Stop();
                     }
+
+                    timeBufferWait.Start();
                 }
             }
             catch
@@ -87,6 +108,18 @@ namespace Transformerizer.Transformers
 
                 // Bubble the exception up
                 throw;
+            }
+            finally
+            {
+                // Save the statistics for this thread
+                _statistics.Add(new ThreadStatistics
+                {
+                    TimeBufferWait = timeBufferWait.Elapsed,
+                    TimeToFirstTransform = timeToFirstTransform.Elapsed,
+                    TimeTotal = timeTotal.Elapsed,
+                    TimeTransforming = timeTransforming.Elapsed,
+                    TransformCount = transformCount
+                });
             }
         }
 
@@ -100,9 +133,9 @@ namespace Transformerizer.Transformers
             {
                 // If there aren't enough items to fill the local thread buffer then scale the buffer down
                 var count = _consumeWithCount.Count;
-                if (size > 1 && count < size*ThreadCount)
+                if (size > 1 && count < size * ThreadCount)
                 {
-                    size = count/ThreadCount;
+                    size = count / ThreadCount;
                     if (size < 1)
                     {
                         size = 1;
@@ -112,6 +145,15 @@ namespace Transformerizer.Transformers
 
             // Get the buffer
             return Consume.TryTake(size, out consume);
+        }
+
+        /// <summary>
+        /// See <see cref="IStatisticsSource.GetStatistics()"/>.
+        /// </summary>
+        public ITransformerStatistics GetStatistics()
+        {
+            var dependantStatistics = (DependentTransformer as IStatisticsSource)?.GetStatistics();
+            return new TransformerStatistics(_statistics, dependantStatistics);
         }
     }
 }
