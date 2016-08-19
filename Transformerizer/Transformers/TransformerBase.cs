@@ -83,21 +83,34 @@ namespace Transformerizer.Transformers
 
             if (args.Item2 != null)
             {
-                // Now wait for the producing task to complete
-                // It should already be done but we need to collect any exceptions
-                try
-                {
-                    args.Item2.Wait();
-                }
-                catch (Exception e)
-                {
-                    // There was an exception in a dependent task
-                    args.Item1.TrySetException(e);
-                }
+                // Now wait for the producing task to complete.
+                // It should already be done but we need to collect any exceptions.
+                // Do this instead of calling Wait() to prevent the stack trace for the exception from getting chopped in half and reset to this location in the code.
+                // Put another way: We want to pass the original exception that aborted the task along unchanged rather than intercepting and wrapping it via try/catch.
+                args.Item2.ContinueWith(ProcessContinue, args.Item1);
+            }
+            else
+            {
+                // Notify the handle that this is done
+                args.Item1.TrySetResult(null);
+            }
+        }
+
+        private static void ProcessContinue(Task innerTask, object outerTask)
+        {
+            var outerTaskSource = (TaskCompletionSource<object>) outerTask;
+
+            if (innerTask.IsCanceled)
+            {
+                outerTaskSource.TrySetCanceled();
             }
 
-            // Notify the handle that this is done
-            args.Item1.TrySetResult(null);
+            if (innerTask.IsFaulted)
+            {
+                outerTaskSource.TrySetException(innerTask.Exception);
+            }
+
+            outerTaskSource.TrySetResult(null);
         }
 
         /// <summary>
