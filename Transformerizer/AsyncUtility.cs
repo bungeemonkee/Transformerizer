@@ -11,7 +11,7 @@ namespace Transformerizer
     {
         public static void Continuation<T>(Task task, object state)
         {
-            var arguments = (Tuple<ITransformer, TaskCompletionSource<IList<T>>, Action<ITransformerStatistics>>)state;
+            var arguments = (Tuple<ITransformer, TaskCompletionSource<IList<T>>, Action<ITransformerStatistics>>) state;
 
             try
             {

@@ -50,6 +50,15 @@ namespace Transformerizer.Transformers
         /// <param name="consume">The item to consume, already removed from the <see cref="Consume" /> collection.</param>
         protected abstract void ProcessConsume(TConsume consume);
 
+        /// <summary>
+        ///     See <see cref="IStatisticsSource.GetStatistics()" />.
+        /// </summary>
+        public ITransformerStatistics GetStatistics()
+        {
+            var dependantStatistics = (DependentTransformer as IStatisticsSource)?.GetStatistics();
+            return new TransformerStatistics(_statistics, dependantStatistics);
+        }
+
 
         /// <summary>
         ///     See <see cref="TransformerBase.Dispose(bool)" />.
@@ -133,9 +142,9 @@ namespace Transformerizer.Transformers
             {
                 // If there aren't enough items to fill the local thread buffer then scale the buffer down
                 var count = _consumeWithCount.Count;
-                if (size > 1 && count < size * ThreadCount)
+                if (size > 1 && count < size*ThreadCount)
                 {
-                    size = count / ThreadCount;
+                    size = count/ThreadCount;
                     if (size < 1)
                     {
                         size = 1;
@@ -145,15 +154,6 @@ namespace Transformerizer.Transformers
 
             // Get the buffer
             return Consume.TryTake(size, out consume);
-        }
-
-        /// <summary>
-        /// See <see cref="IStatisticsSource.GetStatistics()"/>.
-        /// </summary>
-        public ITransformerStatistics GetStatistics()
-        {
-            var dependantStatistics = (DependentTransformer as IStatisticsSource)?.GetStatistics();
-            return new TransformerStatistics(_statistics, dependantStatistics);
         }
     }
 }

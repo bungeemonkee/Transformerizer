@@ -77,7 +77,10 @@ namespace Transformerizer
         /// </summary>
         /// <typeparam name="TProduce">The type of the items produced.</typeparam>
         /// <param name="transformer">The transformer to finish.</param>
-        /// <param name="statisticsCallback">A callback to be invoked with the statistics for this transformer (assuming it supports providing statistics).</param>
+        /// <param name="statisticsCallback">
+        ///     A callback to be invoked with the statistics for this transformer (assuming it
+        ///     supports providing statistics).
+        /// </param>
         /// <returns>The results of the transformation.</returns>
         public static IList<TProduce> EndTransform<TProduce>(this IProduceTransformer<TProduce> transformer, Action<ITransformerStatistics> statisticsCallback)
         {
@@ -114,7 +117,10 @@ namespace Transformerizer
         /// </summary>
         /// <typeparam name="TProduce">The type of the items produced.</typeparam>
         /// <param name="transformer">The transformer to finish.</param>
-        /// <param name="statisticsCallback">A callback to be invoked with the statistics for this transformer (assuming it supports providing statistics).</param>
+        /// <param name="statisticsCallback">
+        ///     A callback to be invoked with the statistics for this transformer (assuming it
+        ///     supports providing statistics).
+        /// </param>
         /// <returns>The results of the transformation.</returns>
         public static Task<IList<TProduce>> EndTransformAsync<TProduce>(this IProduceTransformer<TProduce> transformer, Action<ITransformerStatistics> statisticsCallback)
         {

@@ -26,7 +26,10 @@ namespace Transformerizer
         /// </summary>
         /// <typeparam name="TConsume">The type of the items consumed by .</typeparam>
         /// <param name="transformer">The transformer to finish.</param>
-        /// <param name="statisticsCallback">A callback to be invoked with the statistics for this transformer (assuming it supports providing statistics).</param>
+        /// <param name="statisticsCallback">
+        ///     A callback to be invoked with the statistics for this transformer (assuming it
+        ///     supports providing statistics).
+        /// </param>
         public static void EndTransformVoid<TConsume>(this IConsumeTransformer<TConsume> transformer, Action<ITransformerStatistics> statisticsCallback)
         {
             using (transformer)
@@ -59,7 +62,10 @@ namespace Transformerizer
         /// </summary>
         /// <typeparam name="TConsume">The type of the items consumed.</typeparam>
         /// <param name="transformer">The transformer to finish.</param>
-        /// <param name="statisticsCallback">A callback to be invoked with the statistics for this transformer (assuming it supports providing statistics).</param>
+        /// <param name="statisticsCallback">
+        ///     A callback to be invoked with the statistics for this transformer (assuming it
+        ///     supports providing statistics).
+        /// </param>
         /// <returns>The results of the transformation.</returns>
         public static Task EndTransformVoidAsync<TConsume>(this IConsumeTransformer<TConsume> transformer, Action<ITransformerStatistics> statisticsCallback)
         {
