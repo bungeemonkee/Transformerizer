@@ -147,8 +147,8 @@ namespace Transformerizer.Statistics
             ThreadCount = ThreadStatisticses.Length;
 
             TransformCountTotal = ThreadStatisticses.Sum(x => x.TransformCount);
-            TransformCountMin = ThreadStatisticses.Max(x => x.TransformCount);
-            TransformCountMax = ThreadStatisticses.Min(x => x.TransformCount);
+            TransformCountMin = ThreadStatisticses.Min(x => x.TransformCount);
+            TransformCountMax = ThreadStatisticses.Max(x => x.TransformCount);
             TransformCountAvg = ThreadStatisticses.Average(x => x.TransformCount);
 
             TimeTotalTotal = TimeSpan.FromTicks(ThreadStatisticses.Sum(x => x.TimeTotal.Ticks));
