@@ -171,7 +171,9 @@ namespace Transformerizer.Statistics
             TimeTransformingMax = TimeSpan.FromTicks(ThreadStatisticses.Max(x => x.TimeTransforming.Ticks));
             TimeTransformingAvg = TimeSpan.FromTicks((long) ThreadStatisticses.Average(x => x.TimeTransforming.Ticks));
 
-            IndividualTransformTimeAvg = TimeSpan.FromTicks(TimeTransformingTotal.Ticks/TransformCountTotal);
+            IndividualTransformTimeAvg = TransformCountTotal > 0
+                ? TimeSpan.FromTicks(TimeTransformingTotal.Ticks/TransformCountTotal)
+                : TimeSpan.Zero;
 
             var firstTransformTicks = TimeToFirstTransformMin.Ticks;
             TimeIdleAfterFirstTransformAvg = TimeSpan.FromTicks((long) ThreadStatisticses.Average(x => x.TimeBufferWait.Ticks - firstTransformTicks));

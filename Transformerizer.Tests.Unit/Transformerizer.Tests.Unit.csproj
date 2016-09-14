@@ -66,6 +66,7 @@
     <Compile Include="PerformanceTests.cs" />
     <Compile Include="FullTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Statistics\TransformerStatisticsTests.cs" />
     <Compile Include="Transformers\TransformerBaseTests.cs" />
     <Compile Include="ProduceTransformerExtensionsTests.cs" />
   </ItemGroup>
