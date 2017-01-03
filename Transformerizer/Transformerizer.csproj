@@ -57,6 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collections\BlockingQueueRead.cs" />
     <Compile Include="Methods\Transform.cs" />
+    <Compile Include="Transformers\TransformationException.cs" />
     <Compile Include="Transformers\Transformer.cs" />
     <Compile Include="Transformers\TransformerBase.cs" />
     <Compile Include="Transformers\TransformerBase`1.cs" />

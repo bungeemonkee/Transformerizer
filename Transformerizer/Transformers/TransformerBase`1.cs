@@ -103,7 +103,14 @@ namespace Transformerizer.Transformers
                         timeToFirstTransform.Stop();
 
                         timeTransforming.Start();
-                        ProcessConsume(item);
+                        try
+                        {
+                            ProcessConsume(item);
+                        } catch (Exception exception)
+                        {
+                            // Wrap the exception to indicate what operation failed
+                            throw new TransformationException<TConsume>(item, exception);
+                        }
                         timeTransforming.Stop();
                     }
 
